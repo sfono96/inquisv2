@@ -27,7 +27,7 @@
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
 
     <style type="text/css">
-      .axis {font-family: Roboto,Arial; font-size:26px;}
+      .axis {font-family: Roboto,Arial; font-size:12px;}
       .axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
       .myText {shape-rendering: crispEdges;font-family: Roboto; font-size: 16px}
       .d3-tip {
@@ -110,20 +110,6 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Attempts</b>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div id='attempts'></div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                </div>
-
-                <!-- teacher comps - scores -->
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i><b>Teacher Comps - Scores</b>
                         </div>
                         <!-- /.panel-heading -->
@@ -134,7 +120,7 @@
                     </div>
                 </div>
 
-                <!-- teacher comps - growth -->
+                <!-- teacher comps - scores -->
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -143,6 +129,20 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div id='growth'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+                <!-- teacher comps - growth -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Attempts</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='attempts'></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -250,18 +250,30 @@ rStrengthText.transition().duration(1500).attr("fill-opacity",1)
 ////////////////////////////////////////////////////////////////////////////////
 
 var width = $('#attempts').width()
-var height = 200
+var svgHeight = 200
+var height = 180
 
-asvg = d3.select("#attempts").append("svg").attr("width",width).attr("height",height)
+asvg = d3.select("#attempts").append("svg").attr("width",width).attr("height",svgHeight)
 
-var ax = d3.scale.ordinal().rangeRoundBands([0,width],.1)
+var ax = d3.scale.ordinal().rangeRoundBands([0,width-2],.1)
 var ay = d3.scale.linear().rangeRound([height,0]);
 var color = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
 //var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
+var axAxis = d3.svg.axis().scale(ax).orient("bottom");
 
 var adata = [{"Attempt":1,"1":20,"2":25,"3":15,"4":10},
             {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
             {"Attempt":3,"1":10,"2":5,"3":15,"4":10}];
+
+var aObj = {
+  "teacher":"Mr. Little",
+  "assessment":"PLC-ANOVA",
+  "attemptData":[
+    {"Attempt":1,"1":20,"2":25,"3":15,"4":10},
+    {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
+    {"Attempt":3,"1":10,"2":5,"3":15,"4":10}
+  ]
+};
 
 function newData(){
   var arr = [{"Attempt":1,"1":Math.floor(Math.random()*25),"2":Math.floor(Math.random()*25),"3":Math.floor(Math.random()*5),"4":Math.floor(Math.random()*5)},
@@ -271,101 +283,134 @@ function newData(){
 }
 
 function updateAttempts(data){
+  // color scale using the keys (tiers 1-4)
   color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Attempt"; }));
+  
+  // creating the proportions for the stack normalized column
   data.forEach(function(d){
     var y0 = 0
-    d.ages = color.domain().map(function(name){return {name:name,y0:y0,y1:y0+=d[name]}}) // gets all of the y0 and y1
-    d.ages.forEach(function(d){d.y0 /= y0;d.y1 /= y0;}); // normalizes to 100%
+    d.tiers = color.domain().map(function(name){return {name:name,y0:y0,y1:y0+=d[name],cnt:d[name]}}) // gets all of the y0 and y1 and include the count itself
+    d.tiers.forEach(function(d){d.y0 /= y0;d.y1 /= y0;}); // normalizes to 100%
   })
-
-  data.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
+  data.sort(function(a, b) { return b.tiers[0].y1 - a.tiers[0].y1; });
+  
+  // set the x scale domain (tied to the attempt number)
   ax.domain(data.map(function(d) { return d.Attempt; }));
+  
+  // reset the chart to zero and rebuild
   asvg.selectAll("g").remove();
+
+  // x axis
+  asvg.append("g").attr("class","x axis").attr("transform","translate(1,"+(height)+")").call(axAxis);
+  
+  // rebuild chart
   var state = asvg.selectAll(".attempt")
         .data(data)
       .enter().append("g")
         .attr("class", "attempt")
         .attr("transform", function(d) { return "translate(" + ax(d.Attempt) + ",0)"; });
 
-  var rects = state.selectAll("rect")
-        .data(function(d) { return d.ages; })
-      .enter().append("rect")
+  var rGroups = state.selectAll("g")
+        .data(function(d) { return d.tiers; })
+      .enter().append("g") 
+        .attr("transform","translate(0,"+height+")")
+  
+  var rects = rGroups.append("rect")
         .attr("width", ax.rangeBand())
-        .attr("y", height)
         .attr("height", 0)
         .attr("fill", function(d) { return color(d.name); })
         .attr("fill-opacity", 0)
-        .on("mouseover",function(d){d3.select(this).attr("fill-opacity",.5)})
-        .on("mouseout",function(d){d3.select(this).attr("fill-opacity",1)})
+  
+  var text = rGroups.append("text")
+        .text(function(d){return pct(d.y1 - d.y0)})
+        .attr("fill","white")
+        .style("font-size","14px")
+        .attr("y", function(d) { return (ay(d.y0)-ay(d.y1))/1.7; })
+        .attr("x", ax.rangeBand()/2)
+        .style("text-anchor","middle")
+
+  // click events
+  rGroups
+        .on("mouseover",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",.7);d3.select(this).selectAll("text").text(function(d){return d.cnt})})
+        .on("mouseout",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",1);d3.select(this).selectAll("text").text(function(d){return pct(d.y1 - d.y0)})})
         .on("click",function(d){update(newArr(tData))})
 
+  // initial animations
   var aDelay = function(d,i,j){return j*150};
+  rGroups.transition().duration(750).delay(aDelay)
+    .attr("transform", function(d) { return "translate(0,"+ay(d.y1)+")"; })
+    .selectAll("rect")
+      .attr("height", function(d) { return ay(d.y0) - ay(d.y1); })
+      .attr("fill-opacity", 1);
 
-  rects.transition().duration(750).delay(aDelay)
-    .attr("y", function(d) { return ay(d.y1); })
-    .attr("height", function(d) { return ay(d.y0) - ay(d.y1); })
-    .attr("fill-opacity", 1);
 }
+
 updateAttempts(adata)
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// scores stuff //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-var width = $('#scores').width()
-var height = 200
+var sWidth = $('#scores').width()
+var sSvgHeight = 200
+var sHeight = 180
 
-var svg = d3.select("#scores").append("svg").attr("width",width).attr("height",height)
+var sSvg = d3.select("#scores").append("svg").attr("width",sWidth).attr("height",sSvgHeight)
 
-var x = d3.scale.ordinal().rangeRoundBands([0,width],.1)
-var y = d3.scale.linear().rangeRound([height,0]);
-var color = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
+var sx = d3.scale.ordinal().rangeRoundBands([0,sWidth-2],.1)
+var sy = d3.scale.linear().rangeRound([sHeight,0]);
+var scolor = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
+var sxAxis = d3.svg.axis().scale(sx).orient("bottom")
 //var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
 
-var data = [{"Attempt":1,"1":20,"2":25,"3":15,"4":10},
-            {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
-            {"Attempt":3,"1":10,"2":5,"3":15,"4":10},
-            {"Attempt":4,"1":10,"2":25,"3":15,"4":10}]
+var data = [{"teacher":"Mr. Little","1":20,"2":25,"3":15,"4":10},
+            {"teacher":"Mr. Johnson","1":15,"2":15,"3":15,"4":10},
+            {"teacher":"Mr. Remkus","1":10,"2":5,"3":15,"4":10},
+            {"teacher":"Mr. Marker","1":10,"2":25,"3":15,"4":10}]
 
 function newCompData(){
-  var arr = [{"Attempt":1,"1":Math.floor(Math.random()*40),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
-            {"Attempt":2,"1":Math.floor(Math.random()*30),"2":Math.floor(Math.random()*30),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
-            {"Attempt":3,"1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*10),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
-            {"Attempt":4,"1":Math.floor(Math.random()*10),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)}]
+  var arr = [{"teacher":"Mr. Little","1":Math.floor(Math.random()*40),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
+            {"teacher":"Mr. Johnson","1":Math.floor(Math.random()*30),"2":Math.floor(Math.random()*30),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
+            {"teacher":"Mr. Remkus","1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*10),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
+            {"teacher":"Mr. Marker","1":Math.floor(Math.random()*10),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)}]
   return arr
 }
 
 function updateComps(data){
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Attempt"; }));
+  scolor.domain(d3.keys(data[0]).filter(function(key) { return key !== "teacher"; }));
   data.forEach(function(d){
     var y0 = 0
-    d.ages = color.domain().map(function(name){return {name:name,y0:y0,y1:y0+=d[name]}}) // gets all of the y0 and y1
-    d.ages.forEach(function(d){d.y0 /= y0;d.y1 /= y0;}); // normalizes to 100%
+    d.tiers = color.domain().map(function(name){return {name:name,y0:y0,y1:y0+=d[name],cnt:d[name]}}) // gets all of the y0 and y1 and the count itself
+    d.tiers.forEach(function(d){d.y0 /= y0;d.y1 /= y0;}); // normalizes to 100%
   })
 
-  data.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
-  x.domain(data.map(function(d) { return d.Attempt; }));
-  svg.selectAll("g").remove();
-  var state = svg.selectAll(".attempt")
+  data.sort(function(a, b) { return b.tiers[0].y1 - a.tiers[0].y1; });
+  sx.domain(data.map(function(d) { return d.teacher; }));
+  sSvg.selectAll("g").remove();
+
+  // x axis
+  sSvg.append("g").attr("class","x axis").attr("transform","translate(1,"+(sHeight)+")").call(sxAxis);
+
+  var state = sSvg.selectAll(".teacher")
         .data(data)
       .enter().append("g")
-        .attr("class", "attempt")
-        .attr("transform", function(d) { return "translate(" + x(d.Attempt) + ",0)"; });
+        .attr("class", "teacher")
+        .attr("transform", function(d) { return "translate(" + sx(d.teacher) + ",0)"; });
 
   var rects = state.selectAll("rect")
-        .data(function(d) { return d.ages; })
+        .data(function(d) { return d.tiers; })
       .enter().append("rect")
-        .attr("width", x.rangeBand())
-        .attr("y", height)
+        .attr("width", sx.rangeBand())
+        .attr("y", sHeight)
         .attr("height", 0)
-        .attr("fill", function(d) { return color(d.name); })
+        .attr("fill", function(d) { return scolor(d.name); })
         .attr("fill-opacity", 0);
 
   var aDelay = function(d,i,j){return 500+j*250};
 
   rects.transition().duration(750).delay(aDelay)
-    .attr("y", function(d) { return y(d.y1); })
-    .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+    .attr("y", function(d) { return sy(d.y1); })
+    .attr("height", function(d) { return sy(d.y0) - sy(d.y1); })
     .attr("fill-opacity", 1);
 }
 updateComps(data)
