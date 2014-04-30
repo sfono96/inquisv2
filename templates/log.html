@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Education Analytics</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bootstrap/css/cover.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              <!--<h3 class="masthead-brand">iNQUIS</h3>-->
+            <!--   <ul class="nav masthead-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul> -->
+            </div>
+          </div>
+
+          <div class="inner cover">
+            <h1 class="cover-heading"><img src="/static/imgs/combo-64.png" alt="some_text" style="height:45px"><a style="vertical-align:bottom">&nbspCore Tracks</a></h1>
+            <p class="lead">Helping Utah K-12 students, parents, teachers and administrators easily align with the Utah Common Core.</p>
+          </div>
+          
+          <div class="form-group" style="width:250px;margin-right:auto;margin-left:auto;">
+            <form name="login" action="/log" method="POST">
+              <input type="text" class="form-control" name="uid" placeholder="Username">
+              <input type="password" class="form-control" name="pwd" placeholder="Password"><br>
+              <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="this.form.submit()">Sign in</button>
+            </form>
+          </div>
+          <br>
+        {% for message in get_flashed_messages() %}
+          {{ message }}
+        {% endfor %}
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Brought to you by <a>iNQUIS</a>, a <a>Utah</a> company.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/docs.min.js"></script>
+  </body>
+</html>

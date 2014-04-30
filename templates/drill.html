@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Core Tracks</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bootstrap/css/helper.css" rel="stylesheet">
+
+    <!-- d3.js -->
+    <script src="/static/d3/d3.min.js" charset="utf-8"></script>
+    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
+
+    <!-- jQuery -->
+    <script src="/static/jQuery/jQuery-1.9.1.js" charset="utf-8"></script>
+    <!--<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
+
+    <style type="text/css">
+      .axis {font-family: Roboto,Arial; font-size:26px;}
+      .axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
+      .myText {shape-rendering: crispEdges;font-family: Roboto; font-size: 16px}
+      .d3-tip {
+        line-height: 1;
+        font-family: arial,helvetica,sans-serif;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+      }
+      .hovered {stroke: black;stroke-width: 2px;fill-opacity:.8;}
+      .clicked {stroke: black;stroke-width: 2.5px;fill-opacity:.8;}
+    </style>  
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Pony Express Elementary</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav" style="float:right">
+            <!-- <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li> -->
+            <li><a href="#">Sam Fonoimoana</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+        <div id="page-wrapper">
+            <!-- first row is recent assessments and student table -->
+            <div class="row" style="margin-top:20px">
+                
+                <!-- recent assessments -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Recents</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='recents'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+                <!-- student table -->
+                <div class="col-lg-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Student Table</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='table'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+            </div><!-- /first row -->
+
+            <!-- second row is attempts and teacher comps -->
+            <div class="row" style="margin-top:20px">
+                
+                <!-- recent assessments -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Attempts</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='attempts'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+                <!-- teacher comps - scores -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Teacher Comps - Scores</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='scores'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+                <!-- teacher comps - growth -->
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Teacher Comps - Growth</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='growth'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+            </div><!-- /row -->
+
+
+        </div><!-- /.page-wrapper -->
+    </div><!-- /.container -->
+    
+<style type="text/css">
+
+
+</style>
+<script type="text/javascript">
+
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// recents stuff /////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+var rData = [
+                {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
+                {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
+                {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
+                {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
+                {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
+                {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
+                {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55},
+]
+
+var rHeight = 400, barHeight = rHeight/rData.length
+var rWidth = $('#recents').width()
+var rSvg = d3.select("#recents").append("svg").attr("width",rWidth).attr("height",rHeight)
+var pct = d3.format('%')
+
+function colorMe(num){
+    if(num===0){return "#DCDCDC"}
+    else if(num<=.5){return "#36648B"}
+    else if(num>.5&&num<=.6){return "#4F94CD"}
+    else if(num>.6&&num<=.75){return "#9ACD32"}
+    else{return '#698B22'}
+}
+
+var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(10+(i*barHeight))+")"})
+var rDate = rRows.append("text")
+    .text(function(d){return d.date})
+    .attr("fill","black")
+    .attr("fill-opacity",0)
+    .attr("x",0)
+
+var rDomain = rRows.append("text")
+    .text(function(d){return d.domain})
+    .attr("fill","black")
+    .attr("fill-opacity",0)
+    .attr("x",rWidth*.15)
+
+var rAssessment = rRows.append("text")
+    .text(function(d){return d.assessment})
+    .attr("fill","black")
+    .attr("fill-opacity",0)
+    .attr("x",rWidth*.35)
+
+var rStrength = rRows.append("g")
+    .attr("transform","translate(0,0)")
+
+var rCircle = rStrength.append("circle")
+    .attr("cy",barHeight-50)
+    .attr("r",20)
+    .attr("fill",function(d,i){if(i>0){return colorMe(d.strength)}else{return "none"}})
+    .attr("cx",12)
+    .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
+    .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
+
+var rStrengthText = rStrength.append("text")
+    .text(function(d,i){if(i>0){return pct(d.strength);}else{return d.strength}})
+    .style("font-weight",function(d,i){if(i>0){return "bold"}else{return "normal"}})
+    .attr("fill-opacity",0)
+    .attr("fill",function(d,i){if(i>0){return "white"}else{return "black"}})
+
+rStrength
+  .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
+  .on("mouseout",function(d){d3.select(this).selectAll("circle").classed("hovered",false)})
+  .on("click",function(d){var x = d3.select(this).selectAll("circle"); 
+                          rRows.selectAll("circle").classed("clicked",false);
+                          x.classed("clicked",true);
+                          updateAttempts(newData());
+                          updateComps(newCompData());
+                          updateLines(newGData());
+                        })
+
+var rDelay = function(d,i){return i*50};
+
+rStrength.transition().duration(550).attr("transform","translate("+rWidth*.85+",0)")
+rDate.transition().duration(1000).attr("fill-opacity",1)
+rDomain.transition().duration(1000).attr("fill-opacity",1)
+rAssessment.transition().duration(1000).attr("fill-opacity",1)
+rStrengthText.transition().duration(1500).attr("fill-opacity",1)
+
+
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// attempts stuff /////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+var width = $('#attempts').width()
+var height = 200
+
+asvg = d3.select("#attempts").append("svg").attr("width",width).attr("height",height)
+
+var ax = d3.scale.ordinal().rangeRoundBands([0,width],.1)
+var ay = d3.scale.linear().rangeRound([height,0]);
+var color = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
+//var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
+
+var adata = [{"Attempt":1,"1":20,"2":25,"3":15,"4":10},
+            {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
+            {"Attempt":3,"1":10,"2":5,"3":15,"4":10}];
+
+function newData(){
+  var arr = [{"Attempt":1,"1":Math.floor(Math.random()*25),"2":Math.floor(Math.random()*25),"3":Math.floor(Math.random()*5),"4":Math.floor(Math.random()*5)},
+  {"Attempt":2,"1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*20),"3":Math.floor(Math.random()*25),"4":Math.floor(Math.random()*25)},
+  {"Attempt":3,"1":Math.floor(Math.random()*5),"2":Math.floor(Math.random()*5),"3":Math.floor(Math.random()*25),"4":Math.floor(Math.random()*25)}]
+  return arr
+}
+
+function updateAttempts(data){
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Attempt"; }));
+  data.forEach(function(d){
+    var y0 = 0
+    d.ages = color.domain().map(function(name){return {name:name,y0:y0,y1:y0+=d[name]}}) // gets all of the y0 and y1
+    d.ages.forEach(function(d){d.y0 /= y0;d.y1 /= y0;}); // normalizes to 100%
+  })
+
+  data.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
+  ax.domain(data.map(function(d) { return d.Attempt; }));
+  asvg.selectAll("g").remove();
+  var state = asvg.selectAll(".attempt")
+        .data(data)
+      .enter().append("g")
+        .attr("class", "attempt")
+        .attr("transform", function(d) { return "translate(" + ax(d.Attempt) + ",0)"; });
+
+  var rects = state.selectAll("rect")
+        .data(function(d) { return d.ages; })
+      .enter().append("rect")
+        .attr("width", ax.rangeBand())
+        .attr("y", height)
+        .attr("height", 0)
+        .attr("fill", function(d) { return color(d.name); })
+        .attr("fill-opacity", 0)
+        .on("mouseover",function(d){d3.select(this).attr("fill-opacity",.5)})
+        .on("mouseout",function(d){d3.select(this).attr("fill-opacity",1)})
+        .on("click",function(d){update(newArr(tData))})
+
+  var aDelay = function(d,i,j){return j*150};
+
+  rects.transition().duration(750).delay(aDelay)
+    .attr("y", function(d) { return ay(d.y1); })
+    .attr("height", function(d) { return ay(d.y0) - ay(d.y1); })
+    .attr("fill-opacity", 1);
+}
+updateAttempts(adata)
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// scores stuff //////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+var width = $('#scores').width()
+var height = 200
+
+var svg = d3.select("#scores").append("svg").attr("width",width).attr("height",height)
+
+var x = d3.scale.ordinal().rangeRoundBands([0,width],.1)
+var y = d3.scale.linear().rangeRound([height,0]);
+var color = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
+//var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
+
+var data = [{"Attempt":1,"1":20,"2":25,"3":15,"4":10},
+            {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
+            {"Attempt":3,"1":10,"2":5,"3":15,"4":10},
+            {"Attempt":4,"1":10,"2":25,"3":15,"4":10}]
+
+function newCompData(){
+  var arr = [{"Attempt":1,"1":Math.floor(Math.random()*40),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
+            {"Attempt":2,"1":Math.floor(Math.random()*30),"2":Math.floor(Math.random()*30),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
+            {"Attempt":3,"1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*10),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
+            {"Attempt":4,"1":Math.floor(Math.random()*10),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)}]
+  return arr
+}
+
+function updateComps(data){
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Attempt"; }));
+  data.forEach(function(d){
+    var y0 = 0
+    d.ages = color.domain().map(function(name){return {name:name,y0:y0,y1:y0+=d[name]}}) // gets all of the y0 and y1
+    d.ages.forEach(function(d){d.y0 /= y0;d.y1 /= y0;}); // normalizes to 100%
+  })
+
+  data.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
+  x.domain(data.map(function(d) { return d.Attempt; }));
+  svg.selectAll("g").remove();
+  var state = svg.selectAll(".attempt")
+        .data(data)
+      .enter().append("g")
+        .attr("class", "attempt")
+        .attr("transform", function(d) { return "translate(" + x(d.Attempt) + ",0)"; });
+
+  var rects = state.selectAll("rect")
+        .data(function(d) { return d.ages; })
+      .enter().append("rect")
+        .attr("width", x.rangeBand())
+        .attr("y", height)
+        .attr("height", 0)
+        .attr("fill", function(d) { return color(d.name); })
+        .attr("fill-opacity", 0);
+
+  var aDelay = function(d,i,j){return 500+j*250};
+
+  rects.transition().duration(750).delay(aDelay)
+    .attr("y", function(d) { return y(d.y1); })
+    .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+    .attr("fill-opacity", 1);
+}
+updateComps(data)
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// growth stuff //////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+var gWidth = $('#growth').width()
+var gHeight = 200
+
+var gSvg = d3.select("#growth").append("svg").attr("width",gWidth).attr("height",gHeight)
+
+var gx = d3.scale.ordinal().domain([1,2,3]).rangeBands([0,gWidth]);
+var gy = d3.scale.linear().domain([0,4]).rangeRound([gHeight,0]);
+//var gcolor = ["#FFF2E7","#D0CABF","#B9B1A8","#DE8642","#4B4D52"]
+//var gcolor = ["#393939","#FF5A09","#F3843E","#FF9900","#6E6E6E"]
+var gcolor = ["#B6A754","#77BA9B","#EE8D09","#B5B5B5","#558188"]
+
+var gData = [
+              [{"attempt":1,"score":1.9},{"attempt":2,"score":2.2},{"attempt":3,"score":2.3}],
+              [{"attempt":1,"score":1.0},{"attempt":2,"score":1.2},{"attempt":3,"score":1.6}],
+              [{"attempt":1,"score":2.3},{"attempt":2,"score":2.8},{"attempt":3,"score":3.5}],
+              [{"attempt":1,"score":.9},{"attempt":2,"score":1.7},{"attempt":3,"score":2}]
+]
+
+function newGData() {
+  var arr = [
+                [{"attempt":1,"score":1+Math.random()},{"attempt":2,"score":2.1+Math.random()},{"attempt":3,"score":2.2+Math.random()}],
+                [{"attempt":1,"score":.2+Math.random()},{"attempt":2,"score":.5+Math.random()},{"attempt":3,"score":1+Math.random()}],
+                [{"attempt":1,"score":1.3+Math.random()},{"attempt":2,"score":2+Math.random()},{"attempt":3,"score":3+Math.random()}],
+                [{"attempt":1,"score":.2+Math.random()},{"attempt":2,"score":1+Math.random()},{"attempt":3,"score":1.5+Math.random()}]
+  ]
+  return arr
+}
+
+var line = d3.svg.line()
+  .interpolate('linear') // monotone for smooth, linear for straight
+  .x(function(d){return gx(d.attempt);})
+  .y(function(d){return gy(d.score);})
+
+// var yAxis = d3.svg.axis().scale(gx).orient("top");
+// gSvg.append("g").attr("class","x axis").attr("transform","translate(0,0)").call(xAxis);
+
+function updateLines(gData){
+  gSvg.selectAll("g").remove();
+  var gGrps = gSvg.selectAll("g").data(gData).enter().append("g")
+  // var gLines = gGrps.selectAll("g").data(function(d){return d.scores}).enter().append("g")
+    
+  gGrps.append("path")
+    .attr("d",function(d){return line(d);})
+    .attr("transform","translate("+(0,gWidth)/6+",0)")
+    .style("stroke-dasharray",function(d,i){if(i===1){return "0,0"}else{return "6,3"}})
+    .attr("fill","none")
+    .attr("stroke",function(d,i,j){return gcolor[i]})
+    .attr("stroke-width","4px")
+
+  gGrps.selectAll("circle")
+    .data(function(d){return d;})
+    .enter().append("svg:circle")
+        .attr("cx",function(d,i,j){return gx(d.attempt);})
+        .attr("cy",function(d,i,j){return gy(d.score);})
+        .attr("r","5px")
+        .attr("fill",function(d,i,j){return gcolor[j]})
+        //.attr("stroke","orange")
+        //.attr("stroke-width","4px")
+        .attr("transform","translate("+(0,gWidth)/6+",0)")
+
+// var aDelay = function(d,i,j){return 500+j*250};
+
+// rects.transition().duration(750).delay(aDelay)
+//   .attr("y", function(d) { return y(d.y1); })
+//   .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+//   .attr("fill-opacity", 1);
+}
+updateLines(gData)
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// table stuff ///////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+var tHeight = 400//, barHeight = rHeight/rData.length
+var tWidth = $('#table').width()
+var tSvg = d3.select("#table").append("svg").attr("width",tWidth).attr("height",tHeight)
+//var pct = d3.format('%')
+ var tData = [
+    ['Student','PY','A1','A2','A3','HS'],
+    ['Julia Fonoimoana',1,1,2,3,3],
+    ['Roger Fonoimoana',1,1,2,3,3],
+    ['Danielle Fonoimoana',1,1,2,3,3],
+    ['John Fonoimoana',1,1,2,3,3],
+    ['Rogerito Fonoimoana',1,1,2,3,3],
+    ['Rachel Tuala',1,1,2,3,3],
+    ['Taylor Tuala',1,1,2,3,3],
+    ['Tai Tuala',1,1,2,3,3],
+    ['Ruth Tuala',1,1,2,3,3],
+    ['Iosua Manu',1,1,2,3,3],
+    ['Siona Manu',1,1,2,3,3]
+]
+
+function newArr(arr){
+  var newLen = Math.floor(Math.random()*arr.length)
+  var shuffleArr = shuffle(arr.slice(1,arr.length))
+  var header = []; header.push(arr[0]);
+  var newArr = shuffleArr.slice(0,newLen)
+  var totalArr = header.concat(newArr)
+  return totalArr
+}
+
+/////////// TABLE COLUMN WIDTHS /////////////
+var i,j;
+var tSpacing = [], tBreaks = [], mainCol = .35
+for(i=0;i<tData[0].length;i++){
+  if(i===0){tSpacing.push(tWidth*mainCol)}
+  else{tSpacing.push(tWidth*(1-mainCol)/(tData[0].length-1))}
+}
+for(i=0;i<tSpacing.length;i++){
+  var val = 0
+  for(j=0;j<i;j++){
+    val = val + tSpacing[j]
+  }
+  tBreaks.push(val)
+}
+/////////////////////////////////////////////
+
+function update(tData){
+
+  // UPDATE
+  tSvg.selectAll("g").remove();
+  var tGroups = tSvg.selectAll("g").data(tData)
+  //tGroups.transition().duration(750).attr("transform",function(d,i){return "translate(0,"+tHeight/12*i+")"})
+
+  // ENTER
+  tGroups.enter().append("g")
+  var tRows = tGroups.append("rect")
+    .attr("fill","none")
+    .attr("stroke","black")
+    .attr("stroke-width",".05px")
+    .attr("width",tWidth)
+    .attr("height",tHeight/12-3)
+    .attr("rx",6)
+    .attr("ry",6)
+  var tData = tGroups.selectAll("text").data(function(d){return d}).enter().append('text')
+    .text(function(d){return d})
+    .attr("fill",function(d,i){if(i>0){return "black"}else{return "black"}})
+    //.attr("fill-opacity",0)
+    .attr("x",function(d,i,j){return 20+tBreaks[i]})
+    .attr("y",22)
+    .style("font-weight",function(d,i,j){if(i>0&&j>0){return "normal"}else{return "bold"}})  
+  tGroups.transition()
+    .duration(750)
+    .attr("transform",function(d,i){return "translate(0,"+(tHeight/12*i+2)+")"})
+    //.text.attr("fill-opacity",1)
+
+  // // EXIT
+  // tGroups.exit()
+  //   .transition()
+  //     .duration(750)
+  //     .style("fill-opacity",0)
+  //     .remove();
+
+}
+
+update(tData)
+
+/*setInterval(function(){
+  update(newArr(tData))
+},1500)*/
+
+// setInterval(function() {
+//   update(shuffle(tData)
+//       .slice(0, Math.floor(Math.random() * tData.length))
+//       .sort());
+// }, 1500);
+
+function renew(tData) {
+  update(shuffle(tData)
+      .slice(0, Math.floor(Math.random() * tData.length))
+      .sort());
+};
+
+// Shuffles the input array.
+function shuffle(array) {
+  var m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m], array[m] = array[i], array[i] = t;
+  }
+  return array;
+}
+
+//  
+
+</script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    
+  </body>
+</html>

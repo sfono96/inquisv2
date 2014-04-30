@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Core Tracks</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bootstrap/css/helper.css" rel="stylesheet">
+
+    <!-- d3.js -->
+    <script src="/static/d3/d3.min.js" charset="utf-8"></script>
+    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
+
+    <!-- jQuery -->
+    <script src="/static/jQuery/jQuery-1.9.1.js" charset="utf-8"></script>
+    <!--<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
+
+    <style type="text/css">
+      .axis {font-family: Roboto,Arial; font-size:26px;}
+      .axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
+      .myText {shape-rendering: crispEdges;font-family: Roboto; font-size: 16px}
+      .d3-tip {
+        line-height: 1;
+        font-family: arial,helvetica,sans-serif;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+      }
+      .hovered {stroke: black;stroke-width: 2px;fill-opacity:.8;}
+      .clicked {stroke: black;stroke-width: 2.5px;fill-opacity:.8;}
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Pony Express Elementary</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav" style="float:right">
+            <!-- <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li> -->
+            <li><a href="#">Sam Fonoimoana</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class = "col-lg-12">
+                    <h1 class = "page-header">Grade Level Dashboard</h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- domain -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><h4><b>% of Students Proficient</b></h4>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='grade'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+                
+                <!-- cluster -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><h4><b>Assessment History</b></h4>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id='assessment'></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+            </div><!-- /row1 -->
+
+          
+        </div><!-- /.page-wrapper -->
+    </div><!-- /.container -->
+    
+<script type="text/javascript">
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GRADES
+
+
+var gWidth = $('#grade').width(), gHeight = gWidth*1, barWidth = gWidth/7*.95, bottomMargin = gHeight * .06, aspect = gHeight/gWidth
+
+var data = [    
+    {"grade":"K","ppa":.56,"count":120},
+    {"grade":"1","ppa":.65,"count":120},
+    {"grade":"2","ppa":.75,"count":120},
+    {"grade":"3","ppa":.50,"count":120},
+    {"grade":"4","ppa":.45,"count":120},
+    {"grade":"5","ppa":.80,"count":120},
+    {"grade":"6","ppa":.76,"count":120}
+]
+            
+var gx = d3.scale.ordinal().domain(data.map(function(d){return d.grade})).rangeBands([0,gWidth]);
+var gy = d3.scale.linear().domain([0,1]).range([gHeight,0]);
+var xAxis = d3.svg.axis().scale(gx).orient("bottom")
+var pct = d3.format('%')
+
+var clicked = false
+var gSvg = d3.select("#grade").append("svg")
+    .attr("preserveAspectRatio", "xMidYMid")
+    .attr("viewBox", "0 0 "+gWidth+" "+gHeight)
+    .attr("width", gWidth)
+    .attr("height", gWidth * aspect );
+
+
+
+var gCols = gSvg.selectAll("g").data(data).enter()
+    .append("g")
+    .attr("transform",function(d,i){ return "translate("+(gWidth/7*i)+",0)";})
+var gBars = gCols.append("rect")
+    .classed("clicked",false)
+    .attr("width",barWidth)
+    .attr("height",0)
+    .attr("fill",function(d){return colorMe(d.ppa)})
+    .attr("y",function(d){return gHeight-bottomMargin})
+    .attr("fill-opacity",1)
+var gText = gCols.append("text")
+    .text(function(d){return pct(d.ppa)})
+    .attr("fill","white")
+    .attr("font-size","20px")
+    .attr("y",function(d){return gy(d.ppa)})
+    .attr("x",gWidth/7/2)
+    .style("text-anchor","middle")
+
+gCols
+    .on("mouseover",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",.7).attr("stroke","white")})
+    .on("mouseout",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",1).attr("stroke","none")})
+    .on("click",function(d){gCols.selectAll("rect").classed("clicked",false);
+                            d3.select(this).selectAll("rect").classed("clicked",true);
+                            getAssessments(rObj[d.grade]);
+
+})
+
+gSvg.append("g").attr("class","x axis")
+    .attr("transform", "translate(0," + (gHeight-bottomMargin) + ")")
+    .call(xAxis)
+
+
+var transition = gBars.transition().duration(750),
+    delay = function(d,i){return i*75};
+
+transition.delay(delay)
+    .attr("fill-opacity",1)
+    .attr("height",function(d){return gHeight-gy(d.ppa);})
+    .attr("y",function(d){return gy(d.ppa)-bottomMargin})
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ASSESSMENTS
+
+var rData = [
+                {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
+                {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
+                {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
+                {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
+                {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
+                {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
+                {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55},
+]
+
+var rObj ={
+            "K":[
+                    {"assessment":"Assessment","domain":"Domain","standard":"Standard","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"K.OA","standard":"K.OA.1","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Division","domain":"K.OA","standard":"K.OA.1","date":"1/14","strength":.85},
+                    {"assessment":"PLC-Variables","domain":"K.OA","standard":"K.OA.1","date":"1/21","strength":.75},
+                    {"assessment":"PLC-Random Forest","domain":"K.OA","standard":"K.OA.1","date":"1/28","strength":.65},
+                    {"assessment":"PLC-Clustering","domain":"K.NBT","standard":"K.NBT.1","date":"2/4","strength":.45},
+                    {"assessment":"PLC-Gradient Boosting","domain":"K.NBT","standard":"K.NBT.1","date":"2/11","strength":.35},
+                    {"assessment":"PLC-Regression","domain":"K.NBT","standard":"K.NBT.1","date":"2/18","strength":.4},
+                    {"assessment":"PLC-ANOVA","domain":"K.NBT","standard":"K.NBT.1","date":"2/25","strength":.55}
+                ],
+           "1":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"1.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Division","domain":"1.OA","date":"1/14","strength":.35},
+                    {"assessment":"PLC-Variables","domain":"1.OA","date":"1/21","strength":.35},
+                    {"assessment":"PLC-Random Forest","domain":"1.OA","date":"1/28","strength":.95},
+                    {"assessment":"PLC-Clustering","domain":"1.NBT","date":"2/4","strength":.45},
+                    {"assessment":"PLC-Gradient Boosting","domain":"1.NBT","date":"2/11","strength":.35}
+                ],
+           "2":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"2.OA","date":"1/7","strength":.26},
+                    {"assessment":"PLC-Division","domain":"2.OA","date":"1/14","strength":.85},
+                    {"assessment":"PLC-Variables","domain":"2.OA","date":"1/21","strength":.65}
+                ],
+           "3":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.36},
+                    {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.54},
+                    {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.25},
+                    {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.95},
+                    {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.95},
+                    {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.85},
+                    {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.74},
+            
+                ],
+           "4":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"4.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Division","domain":"4.OA","date":"1/14","strength":.85},
+                    {"assessment":"PLC-Variables","domain":"4.OA","date":"1/21","strength":.55},
+                    {"assessment":"PLC-Random Forest","domain":"4.OA","date":"1/28","strength":.85},
+                    {"assessment":"PLC-Clustering","domain":"4.NBT","date":"2/4","strength":.45},
+                    {"assessment":"PLC-Gradient Boosting","domain":"4.NBT","date":"2/11","strength":.35},
+                    {"assessment":"PLC-Regression","domain":"4.NBT","date":"2/18","strength":.84},
+                    {"assessment":"PLC-ANOVA","domain":"4.NBT","date":"2/25","strength":.85}
+                ],
+           "5":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Random Forest","domain":"5.OA","date":"1/28","strength":.55},
+                    {"assessment":"PLC-Clustering","domain":"5.NBT","date":"2/4","strength":.55},
+                    {"assessment":"PLC-Gradient Boosting","domain":"5.NBT","date":"2/11","strength":.75},
+                    {"assessment":"PLC-Regression","domain":"5.NBT","date":"2/18","strength":.84},
+                    {"assessment":"PLC-ANOVA","domain":"5.NBT","date":"2/25","strength":.65}
+                ],
+           "6":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
+                    {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
+                    {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
+                    {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
+                    {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
+                    {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
+                    {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55}
+                ]
+}
+
+
+var rWidth = $('#assessment').width(),rHeight = rWidth, barHeight = rHeight/rData.length
+var rSvg = d3.select("#assessment").append("svg")
+    .attr("preserveAspectRatio", "xMidYMid")
+    .attr("viewBox", "0 0 "+rWidth+" "+rHeight)
+    .attr("width", rWidth)
+    .attr("height", rWidth * aspect );
+
+$(window).resize(function() {
+  var gWidth = $("#grade").width();
+  gSvg.attr("width", gWidth);
+  gSvg.attr("height", gWidth * aspect);
+  var rWidth = $("#assessment").width();
+  rSvg.attr("width", rWidth);
+  rSvg.attr("height", rWidth * aspect);
+});
+
+
+var pct = d3.format('%')
+
+function colorMe(num){
+    if(num===0){return "#DCDCDC"}
+    else if(num<=.5){return "#36648B"}
+    else if(num>.5&&num<=.6){return "#4F94CD"}
+    else if(num>.6&&num<=.75){return "#9ACD32"}
+    else{return '#698B22'}
+}
+
+function getAssessments(rData){
+    rSvg.selectAll("g").remove();
+    var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(10+(i*barHeight))+")"})
+    var rDate = rRows.append("text")
+        .text(function(d){return d.date})
+        .attr("fill","black")
+        .attr("fill-opacity",0)
+        .attr("x",0)
+
+    var rDomain = rRows.append("text")
+        .text(function(d){return d.domain})
+        .attr("fill","black")
+        .attr("fill-opacity",0)
+        .attr("x",rWidth*.15)
+
+    var rAssessment = rRows.append("text")
+        .text(function(d){return d.assessment})
+        .attr("fill","black")
+        .attr("fill-opacity",0)
+        .attr("x",rWidth*.35)
+
+    var rStrength = rRows.append("g")
+        .attr("transform","translate(0,0)")
+
+    var rCircle = rStrength.append("circle")
+        .attr("cy",-5)
+        .attr("r",25)
+        .attr("fill",function(d,i){if(i>0){return colorMe(d.strength)}else{return "none"}})
+        .attr("cx",12)
+        .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
+        .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
+
+    var rStrengthText = rStrength.append("text")
+        .text(function(d,i){if(i>0){return pct(d.strength);}else{return d.strength}})
+        .style("font-weight",function(d,i){if(i>0){return "bold"}else{return "normal"}})
+        .attr("fill-opacity",0)
+        .attr("fill",function(d,i){if(i>0){return "white"}else{return "black"}})
+
+    rStrength
+      .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
+      .on("mouseout",function(d){d3.select(this).selectAll("circle").classed("hovered",false)})
+      .on("click",function(d){var x = d3.select(this).selectAll("circle"); 
+                              rRows.selectAll("circle").classed("clicked",false);
+                              x.classed("clicked",true);
+                              window.location.href = 'http://' + window.location.host + '/drill';
+                            })
+    var mixUp = [7,2,5,1,0,6,4,3]
+    var rDelay = function(d,i){return mixUp[i] * 75}
+
+
+    rStrength.transition().duration(1000).attr("transform","translate("+rWidth*.85+",0)")
+    rDate.transition().duration(1700).attr("fill-opacity",1)
+    rDomain.transition().duration(1700).attr("fill-opacity",1)
+    rAssessment.transition().duration(1700).attr("fill-opacity",1)
+    rStrengthText.transition().duration(2500).attr("fill-opacity",1)
+}
+
+getAssessments(rObj["K"])
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTIONS
+
+function colorMe(num){
+    if(num===0){return "#DCDCDC"}
+    else if(num<=.5){return "#36648B"}
+    else if(num>.5&&num<=.6){return "#4F94CD"}
+    else if(num>.6&&num<=.75){return "#9ACD32"}
+    else{return '#698B22'}
+}
+
+// function httpGet(theUrl)
+// {
+//     var xmlHttp = null;
+
+//     xmlHttp = new XMLHttpRequest();
+//     xmlHttp.open( "GET", theUrl, false );
+//     xmlHttp.send( null );
+//     return xmlHttp.responseText;
+// }
+   
+</script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    
+  </body>
+</html>
