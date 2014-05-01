@@ -331,7 +331,7 @@ function updateAttempts(data){
 
   // click events
   rGroups
-        .on("mouseover",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",.7);d3.select(this).selectAll("text").text(function(d){return d.cnt})})
+        .on("mouseover",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",.7);d3.select(this).selectAll("text").text(function(d){return d.cnt+" students"})})
         .on("mouseout",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",1);d3.select(this).selectAll("text").text(function(d){return pct(d.y1 - d.y0)})})
         .on("click",function(d){update(newArr(tData))})
 

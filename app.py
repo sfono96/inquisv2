@@ -37,7 +37,7 @@ def log():
 			return redirect(url_for('log'))
 		else:
 			session['logged_in'] = True
-			return redirect(url_for('index'))
+			return redirect(url_for('dash'))
 	return render_template('log.html',error=error)
 
 # main
@@ -47,11 +47,17 @@ def log():
 def dash():
 	return render_template('dash.html')
 
-# julie test
+# drill
 @login_required
 @app.route('/drill',methods=['GET','POST'])
 def drill():
 	return render_template('drill.html')
+
+# tag assessments to standards
+@login_required
+@app.route('/tag',methods=['GET','POST'])
+def tag():
+	return render_template('tag.html')
 
 
 ################ data API's ################
