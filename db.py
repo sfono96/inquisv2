@@ -1,6 +1,9 @@
 from csv_io import *
 import psycopg2, os, urlparse, json
 from math import trunc
+from datetime import date, timedelta, datetime #(need datetime.strptime for the unicode date YYYYMMDD conversion)
+
+
 
 cwd = os.getcwd() # working directory for static files
 path = cwd+'/static/standards_data_complete.csv'
@@ -48,6 +51,15 @@ def grade_level_data():
 	obj = [{"grade":r[0],"ppa":str(r[1]),"count":str(r[2])} for r in rs]
 	return sorted(obj,key=lambda k: k["grade"])
 
-
+####### CHART 2 - Assessments by grade level (last 8 assessments)
+def recent_assessment_data():
+	sql = 'SELECT * FROM vw_assessment_averages WHERE rowcnt <= 8'
+	cursor.execute(sql)
+	rs = cursor.fetchall()
+	grades = set(sorted([r[0] for r in rs]))
+	obj = {}
+	for g in grades:
+		obj[g]=sorted([{"grade":r[0],"assessment":r[1],"domain":'',"standard":'',"date":r[2].strftime("%m/%d"),"strength":str(r[4])} for r in rs if r[0]==g],key=lambda k:k['date'])
+	return obj
 
 

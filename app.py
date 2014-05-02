@@ -46,7 +46,8 @@ def log():
 @app.route('/dash',methods=['GET','POST'])
 def dash():
 	grade_data = grade_level_data() 
-	return render_template('dash.html',grade_data=grade_data)
+	assessment_data = recent_assessment_data() 
+	return render_template('dash.html',grade_data=grade_data, assessment_data=assessment_data)
 
 # drill
 @login_required

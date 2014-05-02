@@ -121,7 +121,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GRADES
 
 var data = {{grade_data|safe}}
-
+var gTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.count+" students"; });
 var gWidth = $('#grade').width(), gHeight = gWidth*1, barWidth = gWidth/data.length*.95, bottomMargin = gHeight * .1, aspect = gHeight/gWidth
 
 var data = {{grade_data|safe}}
@@ -137,14 +137,19 @@ var gSvg = d3.select("#grade").append("svg")
     .attr("viewBox", "0 0 "+gWidth+" "+gHeight)
     .attr("width", gWidth)
     .attr("height", gWidth * aspect );
+
 var gCols = gSvg.selectAll("g").data(data).enter()
     .append("g")
     .attr("transform",function(d,i){ return "translate("+(2+gWidth/data.length*i)+",0)";})
+
+gCols.call(gTip)
+
 var gBars = gCols.append("rect")
     .classed("clicked",false)
     .attr("width",barWidth)
     .attr("height",0)
-    .attr("fill",function(d){return colorMe(d.ppa)})
+    //.attr("fill",function(d){return colorMe(d.ppa)})
+    .attr("fill","#877626")
     .attr("y",function(d){return gHeight-bottomMargin})
     .attr("fill-opacity",1)
 var gText = gCols.append("text")
@@ -156,8 +161,10 @@ var gText = gCols.append("text")
     .style("text-anchor","middle")
 
 gCols
-    .on("mouseover",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",.7).attr("stroke","white")})
-    .on("mouseout",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",1).attr("stroke","none")})
+    .on("mouseover",gTip.show)
+    .on("mouseout",gTip.hide)
+    //.on("mouseover",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",.7).attr("stroke","white");})
+    //.on("mouseout",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",1).attr("stroke","none")})
     .on("click",function(d){gCols.selectAll("rect").classed("clicked",false);
                             d3.select(this).selectAll("rect").classed("clicked",true);
                             getAssessments(rObj[d.grade]);
@@ -186,101 +193,41 @@ $(window).resize(function() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ASSESSMENTS
 
-var rData = [
-                {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
-                {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
-                {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
-                {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
-                {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
-                {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
-                {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
-                {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55},
-]
+var rObj = {{assessment_data|safe}}
 
-var rObj ={
-            "K":[
-                    {"assessment":"Assessment","domain":"Domain","standard":"Standard","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"K.OA","standard":"K.OA.1","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"K.OA","standard":"K.OA.1","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"K.OA","standard":"K.OA.1","date":"1/21","strength":.75},
-                    {"assessment":"PLC-Random Forest","domain":"K.OA","standard":"K.OA.1","date":"1/28","strength":.65},
-                    {"assessment":"PLC-Clustering","domain":"K.NBT","standard":"K.NBT.1","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"K.NBT","standard":"K.NBT.1","date":"2/11","strength":.35},
-                    {"assessment":"PLC-Regression","domain":"K.NBT","standard":"K.NBT.1","date":"2/18","strength":.4},
-                    {"assessment":"PLC-ANOVA","domain":"K.NBT","standard":"K.NBT.1","date":"2/25","strength":.55}
-                ],
-           "1":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"1.OA","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"1.OA","date":"1/14","strength":.35},
-                    {"assessment":"PLC-Variables","domain":"1.OA","date":"1/21","strength":.35},
-                    {"assessment":"PLC-Random Forest","domain":"1.OA","date":"1/28","strength":.95},
-                    {"assessment":"PLC-Clustering","domain":"1.NBT","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"1.NBT","date":"2/11","strength":.35}
-                ],
-           "2":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"2.OA","date":"1/7","strength":.26},
-                    {"assessment":"PLC-Division","domain":"2.OA","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"2.OA","date":"1/21","strength":.65}
-                ],
-           "3":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.36},
-                    {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.54},
-                    {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.25},
-                    {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.95},
-                    {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.95},
-                    {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.85},
-                    {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.74},
-            
-                ],
-           "4":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"4.OA","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"4.OA","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"4.OA","date":"1/21","strength":.55},
-                    {"assessment":"PLC-Random Forest","domain":"4.OA","date":"1/28","strength":.85},
-                    {"assessment":"PLC-Clustering","domain":"4.NBT","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"4.NBT","date":"2/11","strength":.35},
-                    {"assessment":"PLC-Regression","domain":"4.NBT","date":"2/18","strength":.84},
-                    {"assessment":"PLC-ANOVA","domain":"4.NBT","date":"2/25","strength":.85}
-                ],
-           "5":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Random Forest","domain":"5.OA","date":"1/28","strength":.55},
-                    {"assessment":"PLC-Clustering","domain":"5.NBT","date":"2/4","strength":.55},
-                    {"assessment":"PLC-Gradient Boosting","domain":"5.NBT","date":"2/11","strength":.75},
-                    {"assessment":"PLC-Regression","domain":"5.NBT","date":"2/18","strength":.84},
-                    {"assessment":"PLC-ANOVA","domain":"5.NBT","date":"2/25","strength":.65}
-                ],
-           "6":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
-                    {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
-                    {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
-                    {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
-                    {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55}
-                ]
-}
+// var rObj ={
+//             "K":[
+//                     {"assessment":"Assessment","domain":"Domain","standard":"Standard","date":"Date","strength":"% Prof"},
+//                     {"assessment":"PLC-Multiplication","domain":"K.OA","standard":"K.OA.1","date":"1/7","strength":.6},
+//                     {"assessment":"PLC-Division","domain":"K.OA","standard":"K.OA.1","date":"1/14","strength":.85},
+//                     {"assessment":"PLC-Variables","domain":"K.OA","standard":"K.OA.1","date":"1/21","strength":.75},
+//                     {"assessment":"PLC-Random Forest","domain":"K.OA","standard":"K.OA.1","date":"1/28","strength":.65},
+//                     {"assessment":"PLC-Clustering","domain":"K.NBT","standard":"K.NBT.1","date":"2/4","strength":.45},
+//                     {"assessment":"PLC-Gradient Boosting","domain":"K.NBT","standard":"K.NBT.1","date":"2/11","strength":.35},
+//                     {"assessment":"PLC-Regression","domain":"K.NBT","standard":"K.NBT.1","date":"2/18","strength":.4},
+//                     {"assessment":"PLC-ANOVA","domain":"K.NBT","standard":"K.NBT.1","date":"2/25","strength":.55}
+//                 ], ....
 
 
-var rWidth = $('#assessment').width(),rHeight = rWidth*.75, barHeight = rHeight/rData.length, rAspect = rHeight/rWidth
+var rWidth = $('#assessment').width(),rHeight = rWidth*1, barHeight = rHeight/8.5, rAspect = rHeight/rWidth
 var rSvg = d3.select("#assessment").append("svg")
     .attr("preserveAspectRatio", "xMidYMid")
     .attr("viewBox", "0 0 "+rWidth+" "+rHeight)
     .attr("width", rWidth)
     .attr("height", rWidth * rAspect );
-
+var colSpacing = [0,.15,.35,.80]
 var pct = d3.format('%')
 
 function getAssessments(rData){
+    // zap the old
     rSvg.selectAll("g").remove();
-    var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(10+(i*barHeight))+")"})
+
+    // make the new
+    var rHeaders = rSvg.selectAll("g.rHeaders").data(["Date","Domain","Assessment","% Proficient"]).enter().append("g")
+        .attr("transform",function(d,i){return "translate("+(rWidth*colSpacing[i])+",15)"})
+        .append("text").text(function(d){return d}).attr("fill","black").style("font-weight","bold")
+
+    var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(60+(i*barHeight))+")"})
     var rDate = rRows.append("text")
         .text(function(d){return d.date})
         .attr("fill","black")
@@ -305,16 +252,16 @@ function getAssessments(rData){
     var rCircle = rStrength.append("circle")
         .attr("cy",-5)
         .attr("r",barHeight*.45)
-        .attr("fill",function(d,i){if(i>0){return colorMe(d.strength)}else{return "none"}})
+        .attr("fill",function(d,i){return colorMe(d.strength)})
         .attr("cx",12)
         .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
         .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
 
     var rStrengthText = rStrength.append("text")
-        .text(function(d,i){if(i>0){return pct(d.strength);}else{return d.strength}})
-        .style("font-weight",function(d,i){if(i>0){return "bold"}else{return "normal"}})
+        .text(function(d,i){return pct(d.strength);})
+        .style("font-weight","bold")
         .attr("fill-opacity",0)
-        .attr("fill",function(d,i){if(i>0){return "white"}else{return "black"}})
+        .attr("fill","white")
 
     rStrength
       .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
@@ -328,14 +275,14 @@ function getAssessments(rData){
     var rDelay = function(d,i){return mixUp[i] * 75}
 
 
-    rStrength.transition().duration(1000).attr("transform","translate("+rWidth*.85+",0)")
+    rStrength.transition().duration(1000).attr("transform","translate("+rWidth*.87+",0)")
     rDate.transition().duration(1700).attr("fill-opacity",1)
     rDomain.transition().duration(1700).attr("fill-opacity",1)
     rAssessment.transition().duration(1700).attr("fill-opacity",1)
     rStrengthText.transition().duration(2500).attr("fill-opacity",1)
 }
 
-getAssessments(rObj["K"])
+getAssessments(rObj["1"])
 
 // window resize
 $(window).resize(function() {
@@ -345,18 +292,13 @@ $(window).resize(function() {
 });
 
 
-// tooltip
-var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.description; });
-stSvg.call(tip)
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTIONS
 
 function colorMe(num){
     if(num===0){return "#DCDCDC"}
-    else if(num<=.5){return "#36648B"}
-    else if(num>.5&&num<=.6){return "#4F94CD"}
-    else if(num>.6&&num<=.75){return "#9ACD32"}
+    else if(num<=.69){return "#36648B"}
+    else if(num>.7&&num<=.79){return "#4F94CD"}
+    else if(num>.8&&num<=.89){return "#9ACD32"}
     else{return '#698B22'}
 }
 
