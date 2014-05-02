@@ -62,4 +62,15 @@ def recent_assessment_data():
 		obj[g]=sorted([{"grade":r[0],"assessment":r[1],"domain":'',"standard":'',"date":r[2].strftime("%m/%d"),"strength":str(r[4])} for r in rs if r[0]==g],key=lambda k:k['date'])
 	return obj
 
+####### CHARTS 3 - Teacher Comps - Scores
+def teacher_comps_score(grade):
+	sql = 'SELECT *,LEFT(teacher,POSITION(\',\' IN teacher)-1) FROM vw_teacher_attempts WHERE grade_level = %s' % grade
+	cursor.execute(sql)
+	rs = cursor.fetchall()
+	obj = {}
+	assessments = set([r[2] for r in rs])
+	for a in assessments:
+		obj[a] = [{"teacher":r[8],"0":int(r[3]),"1":int(r[4]),"2":int(r[5]),"3":int(r[6]),"4":int(r[7])} for r in rs if r[2] == a]
+	return obj
+
 

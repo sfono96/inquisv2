@@ -52,8 +52,12 @@ def dash():
 # drill
 @login_required
 @app.route('/drill',methods=['GET','POST'])
-def drill():
-	return render_template('drill.html')
+@app.route('/drill/<grade>/<assessment>',methods=['GET','POST'])
+def drill(grade="1",assessment="PLC - Subtraction"):
+	teacher_comps_score_data = teacher_comps_score(grade)
+	assessment_data = recent_assessment_data()
+	return render_template('drill.html',teacher_comps_score=teacher_comps_score_data,assessment=[assessment.encode('ascii','ignore')],
+		grade=grade,assessment_data=assessment_data)
 
 # tag assessments to standards
 @login_required
