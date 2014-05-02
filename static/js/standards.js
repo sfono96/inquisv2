@@ -1,4 +1,4 @@
-{
+var standardsObject = {
     "K": {
         "K.NBT": {
             "K.NBT.1": "Compose and decompose numbers from 11 to 19 into ten ones and some further ones, e.g., by using objects or drawings, and record each composition or decomposition by a drawing or equation (e.g., 18 = 10 + 8); understand that these numbers are composed of ten ones and one, two, three, four, five, six, seven, eight, or nine ones."

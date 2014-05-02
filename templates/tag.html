@@ -26,6 +26,12 @@
     <!--<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
 
+<!-- Datatables + TableTools -->
+    <link href="/static/DataTables-1.9.4/media/css/jquery.dataTables.css" rel="stylesheet">
+    <script src="/static/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
+    <link href="/static/DataTables-1.9.4/extras/TableTools/media/css/TableTools.css" rel="stylesheet">
+    <script src="/static/DataTables-1.9.4/extras/TableTools/media/js/TableTools.min.js"></script>
+
     <style type="text/css">
       .axis {font-family: Roboto,Arial; font-size:26px;}
       .axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
@@ -71,12 +77,25 @@
 
     <div class="container">
         <div id="page-wrapper">
+            <!-- <div class="row">
+                <div class="btn-group" style="margin-top:20px">
+                  <button type="button" class="btn btn-default">K</button>
+                  <button type="button" class="btn btn-default">1</button>
+                  <button type="button" class="btn btn-default">2</button>
+                  <button type="button" class="btn btn-default">3</button>
+                  <button type="button" class="btn btn-default">4</button>
+                  <button type="button" class="btn btn-default">5</button>
+                  <button type="button" class="btn btn-default">6</button>
+                </div>
+            </div> -->
 
             <div class="row">
                 <div class = "col-lg-12" style="margin-top:20px">
-                    <table class="table table-striped">
+
+                    <table id="tagger">
                         <thead>
                             <tr>
+                                <th>Grade</th>
                                 <th>Assessment</th>
                                 <th>Date</th>
                                 <th>Standard Mapped</th>
@@ -84,9 +103,10 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td>K</td>
                                 <td>PLC - Fractions</td>
                                 <td>4/12</td>
-                                <td>
+                                <td>    
                                     <select class="form-control">
                                         <option value="one">One</option>
                                         <option value="two">Two</option>
@@ -97,9 +117,276 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>K</td>
                                 <td>PLC - Decimals</td>
                                 <td>4/19</td>
-                                <td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
+                                    <select class="form-control">
+                                        <option value="one">One</option>
+                                        <option value="two">Two</option>
+                                        <option value="three">Three</option>
+                                        <option value="four">Four</option>
+                                        <option value="five">Five</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>K</td>
+                                <td>PLC - Decimals</td>
+                                <td>4/19</td>
+                                <td>   
                                     <select class="form-control">
                                         <option value="one">One</option>
                                         <option value="two">Two</option>
@@ -111,13 +398,32 @@
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
-            </div>
+            </div> <!-- row -->
           
         </div><!-- /.page-wrapper -->
     </div><!-- /.container -->
     
-<script type="text/javascript">   
+<script type="text/javascript">
+    $(document).ready(function() {
+       $('#tagger').dataTable({
+            "bPaginate": false,
+            //"sDom": 'TC<"clear">lfrtip',
+            "sDom": 'W<"clear">lfrtip',
+            "sScrollY": "600px",
+            "bScrollCollapse": true,
+            "oTableTools": {
+                "aButtons":["copy","print","xls"],
+                //"sSwfPath": "{{url_for('static',filename='copy_csv_xls_pdf.swf')}}"
+                "sSwfPath": "/static/DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls_pdf.swf"
+            },
+            "search":true,
+            "columnDefs": [
+                { type: "Grade", targets: 0 }
+            ]
+        });
+    });
 </script>
 
     <!-- Bootstrap core JavaScript
