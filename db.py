@@ -36,9 +36,18 @@ else:
 # cursor object
 cursor = conn.cursor()
 
-cursor.execute('SELECT * FROM VW_ASSESSMENT_GROUP LIMIT 5')
-rs = cursor.fetchall()
-for r in rs:
-	print r
+###############################################################################################################################################
+################################################################# VICKI V2 ####################################################################
+###############################################################################################################################################
+
+####### CHART 1 - Grade level data object 
+def grade_level_data():
+	sql = 'SELECT grade_level, ROUND(AVG(proficient),2) ppa, COUNT(*) students FROM vw_average_high_scores GROUP BY grade_level'
+	cursor.execute(sql)
+	rs = cursor.fetchall()
+	obj = [{"grade":r[0],"ppa":str(r[1]),"count":str(r[2])} for r in rs]
+	return sorted(obj,key=lambda k: k["grade"])
+
+
 
 
