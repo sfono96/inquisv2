@@ -59,7 +59,7 @@ def recent_assessment_data():
 	grades = set(sorted([r[0] for r in rs]))
 	obj = {}
 	for g in grades:
-		obj[g]=sorted([{"grade":r[0],"assessment":r[1],"domain":'',"standard":'',"date":r[2].strftime("%m/%d"),"strength":str(r[4])} for r in rs if r[0]==g],key=lambda k:k['date'])
+		obj[g]=sorted([{"grade":r[0],"assessment":r[1],"domain":'NBT',"standard":'',"date":r[2].strftime("%m/%d"),"strength":str(r[4])} for r in rs if r[0]==g],key=lambda k:k['date'])
 	return obj
 
 ####### CHARTS 3 - Teacher Comps - Scores
@@ -73,4 +73,27 @@ def teacher_comps_score(grade):
 		obj[a] = [{"teacher":r[8],"0":int(r[3]),"1":int(r[4]),"2":int(r[5]),"3":int(r[6]),"4":int(r[7])} for r in rs if r[2] == a]
 	return obj
 
+####### CHART 4 - Single Teacher Attempts
+def single_teacher_attempts(grade):
+	sql = 'SELECT *,LEFT(teacher,POSITION(\',\' IN teacher)-1) FROM vw_single_teacher_attempts WHERE grade_level = %s AND attempt IS NOT NULL' % grade
+	cursor.execute(sql)
+	rs = cursor.fetchall()
+	obj = {}
+	assessments = set([r[1] for r in rs])
+	teachers = set([r[9] for r in rs])
+	for a in assessments:
+		obj[a] = {}
+		for t in teachers:
+			obj[a][t] = sorted([{"attempt":int(r[3]),"0":int(r[4]),"1":int(r[5]),"2":int(r[6]),"3":int(r[7]),"4":int(r[8])} for r in rs if r[9] == t and r[1] == a],key=lambda k: k["attempt"])
+	return obj
 
+####### TABLE 4 - Table data (still need positions and prior year scores)
+def student_table_data(grade):
+	sql = 'SELECT *,LEFT(teacher,POSITION(\',\' IN teacher)-1) FROM vw_student_attempts WHERE grade_level = %s' % grade
+	cursor.execute(sql)
+	rs = cursor.fetchall()
+	obj = {}
+	assessments = set([r[1] for r in rs])
+	for a in assessments:
+		obj[a] = [[r[8],r[3],170,str(r[4]),str(r[5]),str(r[6]),str(r[7])] for r in rs if r[1] == a]
+	return obj

@@ -26,6 +26,12 @@
     <!--<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
 
+<!-- Datatables + TableTools -->
+    <link href="/static/DataTables-1.9.4/media/css/jquery.dataTables.css" rel="stylesheet">
+    <script src="/static/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
+    <link href="/static/DataTables-1.9.4/extras/TableTools/media/css/TableTools.css" rel="stylesheet">
+    <script src="/static/DataTables-1.9.4/extras/TableTools/media/js/TableTools.min.js"></script>
+
     <style type="text/css">
       .axis {font-family: Roboto,Arial; font-size:12px;}
       .axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
@@ -91,11 +97,35 @@
                 <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Student Table</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b id="tblHdr"></b>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id='table'></div>
+                            <table id='table' class="table table-striped table-bordered table-condensed">
+                              <thead>
+                                <tr>
+                                  <th>Teacher</th>
+                                  <th>Student</th>
+                                  <th>PY</th>
+                                  <th>A1</th>
+                                  <th>A2</th>
+                                  <th>A3</th>
+                                  <th>HS</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                </tr>
+                              </tbody>
+
+                            </table>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -138,7 +168,7 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Attempts</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b id="attHdr"></b>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -160,26 +190,63 @@
 </style>
 <script type="text/javascript">
 
+function tblHdr(assessment){
+  $('#tblHdr').text('Student Table - '+assessment)
+}
+
+function attHdr(teacher){
+  $('#attHdr').text('Attempts - '+teacher)
+}
+
+$(document).ready(function(){
+  tblHdr(selectedAssessment);
+  attHdr('');
+})
+
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// recents stuff /////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-var rData = [
-                {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
-                {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
-                {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
-                {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
-                {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
-                {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
-                {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
-                {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55},
-]
+var selectedGrade = {{grade}}
+var rObj = {{assessment_data|safe}}
+var rData = rObj[selectedGrade]
+var teacherCompsObj = {{teacher_comps_score|safe}}
+var selectedAssessment = {{assessment|safe}}[0]
+var attemptsDataDist = {{single_teacher_attempts_data|safe}}
+var tableData = {{table_data|safe}}
 
-var rHeight = 400, barHeight = rHeight/rData.length
-var rWidth = $('#recents').width()
-var rSvg = d3.select("#recents").append("svg").attr("width",rWidth).attr("height",rHeight)
+// function myIdx(){
+//   var idx=0;
+//   var found=false;
+//   while(found===false){
+//     if(rData[idx].assessment===selectedAssessment){return idx; found=true}else{idx++}
+//   }
+// }
+
+// var rData = [
+//                 {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+//                 {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+//                 {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
+//                 {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
+//                 {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
+//                 {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
+//                 {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
+//                 {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
+//                 {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55},
+// ]
+
+//var rHeight = 400, barHeight = rHeight/rData.length
+//var rWidth = $('#recents').width()
+//var rSvg = d3.select("#recents").append("svg").attr("width",rWidth).attr("height",rHeight)
 var pct = d3.format('%')
+
+var rWidth = $('#recents').width(),rHeight = 400, barHeight = rHeight/8.5, rAspect = rHeight/rWidth
+var rSvg = d3.select("#recents").append("svg")
+    .attr("preserveAspectRatio", "xMidYMid")
+    .attr("viewBox", "0 0 "+rWidth+" "+rHeight)
+    .attr("width", rWidth)
+    .attr("height", rWidth * rAspect );
+var colSpacing = [0,.15,.35,.80]
 
 function colorMe(num){
     if(num===0){return "#DCDCDC"}
@@ -189,61 +256,73 @@ function colorMe(num){
     else{return '#698B22'}
 }
 
-var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(10+(i*barHeight))+")"})
-var rDate = rRows.append("text")
-    .text(function(d){return d.date})
-    .attr("fill","black")
-    .attr("fill-opacity",0)
-    .attr("x",0)
+function getAssessments(rData){
+  rSvg.selectAll("g").remove();
 
-var rDomain = rRows.append("text")
-    .text(function(d){return d.domain})
-    .attr("fill","black")
-    .attr("fill-opacity",0)
-    .attr("x",rWidth*.15)
+  var rHeaders = rSvg.selectAll("g.rHeaders").data(["Date","Domain","Assessment","% Prof."]).enter().append("g")
+    .attr("transform",function(d,i){return "translate("+(rWidth*colSpacing[i])+",10)"})
+    .append("text").text(function(d){return d}).attr("fill","black").style("font-weight","bold")
 
-var rAssessment = rRows.append("text")
-    .text(function(d){return d.assessment})
-    .attr("fill","black")
-    .attr("fill-opacity",0)
-    .attr("x",rWidth*.35)
+  var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(45+(i*barHeight))+")"})
+  var rDate = rRows.append("text")
+      .text(function(d){return d.date})
+      .attr("fill","black")
+      .attr("fill-opacity",0)
+      .attr("x",0)
 
-var rStrength = rRows.append("g")
-    .attr("transform","translate(0,0)")
+  var rDomain = rRows.append("text")
+      .text(function(d){return d.domain})
+      .attr("fill","black")
+      .attr("fill-opacity",0)
+      .attr("x",rWidth*.15)
 
-var rCircle = rStrength.append("circle")
-    .attr("cy",barHeight-50)
-    .attr("r",20)
-    .attr("fill",function(d,i){if(i>0){return colorMe(d.strength)}else{return "none"}})
-    .attr("cx",12)
-    .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
-    .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
+  var rAssessment = rRows.append("text")
+      .text(function(d){return d.assessment.replace("PLC","")})
+      .attr("fill","black")
+      .attr("fill-opacity",0)
+      .attr("x",rWidth*.35)
 
-var rStrengthText = rStrength.append("text")
-    .text(function(d,i){if(i>0){return pct(d.strength);}else{return d.strength}})
-    .style("font-weight",function(d,i){if(i>0){return "bold"}else{return "normal"}})
-    .attr("fill-opacity",0)
-    .attr("fill",function(d,i){if(i>0){return "white"}else{return "black"}})
+  var rStrength = rRows.append("g")
+      .attr("transform","translate(0,0)")
 
-rStrength
-  .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
-  .on("mouseout",function(d){d3.select(this).selectAll("circle").classed("hovered",false)})
-  .on("click",function(d){var x = d3.select(this).selectAll("circle"); 
-                          rRows.selectAll("circle").classed("clicked",false);
-                          x.classed("clicked",true);
-                          updateAttempts(newData());
-                          updateComps(newCompData());
-                          updateLines(newGData());
-                        })
+  var rCircle = rStrength.append("circle")
+      .attr("cy",-5)
+      .attr("r",barHeight*.45)
+      .attr("fill",function(d,i){return colorMe(d.strength)})
+      .attr("cx",12)
+      .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
+      .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
 
-var rDelay = function(d,i){return i*50};
+  var rStrengthText = rStrength.append("text")
+      .text(function(d,i){return pct(d.strength);})
+      .style("font-weight","bold")
+      .attr("fill-opacity",0)
+      .attr("fill","white")
 
-rStrength.transition().duration(550).attr("transform","translate("+rWidth*.85+",0)")
-rDate.transition().duration(1000).attr("fill-opacity",1)
-rDomain.transition().duration(1000).attr("fill-opacity",1)
-rAssessment.transition().duration(1000).attr("fill-opacity",1)
-rStrengthText.transition().duration(1500).attr("fill-opacity",1)
+  rStrength
+    .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
+    .on("mouseout",function(d){d3.select(this).selectAll("circle").classed("hovered",false)})
+    .on("click",function(d,i){var x = d3.select(this).selectAll("circle"); 
+                            rRows.selectAll("circle").classed("clicked",false);
+                            x.classed("clicked",true);
+                            selectedAssessment = rData[i].assessment;
+                            asvg.selectAll("g").remove();
+                            updateComps(teacherCompsObj[selectedAssessment]);
+                            tblHdr(selectedAssessment);
+                            updateTable(tableData[selectedAssessment]);
+                            // updateLines(newGData());
+                          })
 
+  var rDelay = function(d,i){return i*50};
+
+  rStrength.transition().duration(550).attr("transform","translate("+rWidth*.85+",0)")
+  rDate.transition().duration(1000).attr("fill-opacity",1)
+  rDomain.transition().duration(1000).attr("fill-opacity",1)
+  rAssessment.transition().duration(1000).attr("fill-opacity",1)
+  rStrengthText.transition().duration(1500).attr("fill-opacity",1)
+}
+
+getAssessments(rData)
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// attempts stuff /////////////////////////////////
@@ -257,34 +336,27 @@ asvg = d3.select("#attempts").append("svg").attr("width",width).attr("height",sv
 
 var ax = d3.scale.ordinal().rangeRoundBands([0,width-2],.1)
 var ay = d3.scale.linear().rangeRound([height,0]);
-var color = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
+var color = d3.scale.ordinal().range(['lightgrey','#36648B','#4F94CD','#9ACD32','#698B22']);
 //var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
 var axAxis = d3.svg.axis().scale(ax).orient("bottom");
 
-var adata = [{"Attempt":1,"1":20,"2":25,"3":15,"4":10},
-            {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
-            {"Attempt":3,"1":10,"2":5,"3":15,"4":10}];
+var adata = [{"attempt":1,"0":0,"1":20,"2":25,"3":15,"4":10},
+            {"attempt":2,"0":0,"1":15,"2":15,"3":15,"4":10},
+            {"attempt":3,"0":0,"1":10,"2":5,"3":15,"4":10}];
 
-var aObj = {
-  "teacher":"Mr. Little",
-  "assessment":"PLC-ANOVA",
-  "attemptData":[
-    {"Attempt":1,"1":20,"2":25,"3":15,"4":10},
-    {"Attempt":2,"1":15,"2":15,"3":15,"4":10},
-    {"Attempt":3,"1":10,"2":5,"3":15,"4":10}
-  ]
-};
 
-function newData(){
-  var arr = [{"Attempt":1,"1":Math.floor(Math.random()*25),"2":Math.floor(Math.random()*25),"3":Math.floor(Math.random()*5),"4":Math.floor(Math.random()*5)},
-  {"Attempt":2,"1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*20),"3":Math.floor(Math.random()*25),"4":Math.floor(Math.random()*25)},
-  {"Attempt":3,"1":Math.floor(Math.random()*5),"2":Math.floor(Math.random()*5),"3":Math.floor(Math.random()*25),"4":Math.floor(Math.random()*25)}]
-  return arr
-}
+// function newData(){
+//   var arr = [{"Attempt":1,"1":Math.floor(Math.random()*25),"2":Math.floor(Math.random()*25),"3":Math.floor(Math.random()*5),"4":Math.floor(Math.random()*5)},
+//   {"Attempt":2,"1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*20),"3":Math.floor(Math.random()*25),"4":Math.floor(Math.random()*25)},
+//   {"Attempt":3,"1":Math.floor(Math.random()*5),"2":Math.floor(Math.random()*5),"3":Math.floor(Math.random()*25),"4":Math.floor(Math.random()*25)}]
+//   return arr
+// }
 
 function updateAttempts(data){
+  
+  data.forEach(function(d){if(d.tiers){delete d.tiers}});
   // color scale using the keys (tiers 1-4)
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Attempt"; }));
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "attempt"; }));
   
   // creating the proportions for the stack normalized column
   data.forEach(function(d){
@@ -295,7 +367,7 @@ function updateAttempts(data){
   data.sort(function(a, b) { return b.tiers[0].y1 - a.tiers[0].y1; });
   
   // set the x scale domain (tied to the attempt number)
-  ax.domain(data.map(function(d) { return d.Attempt; }));
+  ax.domain(data.map(function(d) { return d.attempt; }));
   
   // reset the chart to zero and rebuild
   asvg.selectAll("g").remove();
@@ -308,7 +380,7 @@ function updateAttempts(data){
         .data(data)
       .enter().append("g")
         .attr("class", "attempt")
-        .attr("transform", function(d) { return "translate(" + ax(d.Attempt) + ",0)"; });
+        .attr("transform", function(d) { return "translate(" + ax(d.attempt) + ",0)"; });
 
   var rGroups = state.selectAll("g")
         .data(function(d) { return d.tiers; })
@@ -331,9 +403,12 @@ function updateAttempts(data){
 
   // click events
   rGroups
-        .on("mouseover",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",.7);d3.select(this).selectAll("text").text(function(d){return d.cnt+" students"})})
+        .on("mouseover",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",.7);d3.select(this).selectAll("text").text(function(d){return d.cnt+" kids"})})
         .on("mouseout",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",1);d3.select(this).selectAll("text").text(function(d){return pct(d.y1 - d.y0)})})
-        .on("click",function(d){update(newArr(tData))})
+        .on("click",function(d){
+                                  update(newArr(tData));
+                                  //updateComps(teacherCompsObj[])
+        })
 
   // initial animations
   var aDelay = function(d,i,j){return j*150};
@@ -359,22 +434,14 @@ var sSvg = d3.select("#scores").append("svg").attr("width",sWidth).attr("height"
 
 var sx = d3.scale.ordinal().rangeRoundBands([0,sWidth-2],.1)
 var sy = d3.scale.linear().rangeRound([sHeight,0]);
-var scolor = d3.scale.ordinal().range(['#36648B','#4F94CD','#9ACD32','#698B22']);
-var sxAxis = d3.svg.axis().scale(sx).orient("bottom")
+var scolor = d3.scale.ordinal().range(['lightgrey','#36648B','#4F94CD','#9ACD32','#698B22']);
+var sxAxis = d3.svg.axis().scale(sx).orient("bottom").ticks(0)
 //var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
 
-var data = [{"teacher":"Mr. Little","1":20,"2":25,"3":15,"4":10},
-            {"teacher":"Mr. Johnson","1":15,"2":15,"3":15,"4":10},
-            {"teacher":"Mr. Remkus","1":10,"2":5,"3":15,"4":10},
-            {"teacher":"Mr. Marker","1":10,"2":25,"3":15,"4":10}]
-
-function newCompData(){
-  var arr = [{"teacher":"Mr. Little","1":Math.floor(Math.random()*40),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
-            {"teacher":"Mr. Johnson","1":Math.floor(Math.random()*30),"2":Math.floor(Math.random()*30),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
-            {"teacher":"Mr. Remkus","1":Math.floor(Math.random()*20),"2":Math.floor(Math.random()*10),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)},
-            {"teacher":"Mr. Marker","1":Math.floor(Math.random()*10),"2":Math.floor(Math.random()*50),"3":Math.floor(Math.random()*30),"4":Math.floor(Math.random()*20)}]
-  return arr
-}
+// var data = [{"teacher":"Mr. Little","1":20,"2":25,"3":15,"4":10},
+//             {"teacher":"Mr. Johnson","1":15,"2":15,"3":15,"4":10},
+//             {"teacher":"Mr. Remkus","1":10,"2":5,"3":15,"4":10},
+//             {"teacher":"Mr. Marker","1":10,"2":25,"3":15,"4":10}]
 
 function updateComps(data){
   scolor.domain(d3.keys(data[0]).filter(function(key) { return key !== "teacher"; }));
@@ -386,6 +453,7 @@ function updateComps(data){
 
   data.sort(function(a, b) { return b.tiers[0].y1 - a.tiers[0].y1; });
   sx.domain(data.map(function(d) { return d.teacher; }));
+
   sSvg.selectAll("g").remove();
 
   // x axis
@@ -394,26 +462,52 @@ function updateComps(data){
   var state = sSvg.selectAll(".teacher")
         .data(data)
       .enter().append("g")
-        .attr("class", "teacher")
+        .attr("class", "attempt")
         .attr("transform", function(d) { return "translate(" + sx(d.teacher) + ",0)"; });
 
-  var rects = state.selectAll("rect")
+  var sGroups = state.selectAll("g")
         .data(function(d) { return d.tiers; })
-      .enter().append("rect")
+      .enter().append("g") 
+        .attr("transform","translate(0,"+sHeight+")")
+  
+  var rects = sGroups.append("rect")
         .attr("width", sx.rangeBand())
-        .attr("y", sHeight)
         .attr("height", 0)
-        .attr("fill", function(d) { return scolor(d.name); })
-        .attr("fill-opacity", 0);
+        .attr("fill", function(d) { return color(d.name); })
+        .attr("fill-opacity", 0)
+  
+  var text = sGroups.append("text")
+        .text(function(d){return pct(d.y1 - d.y0)})
+        .attr("fill","white")
+        .style("font-size","14px")
+        .attr("y", function(d) { return (sy(d.y0)-sy(d.y1))/1.7; })
+        .attr("x", sx.rangeBand()/2)
+        .style("text-anchor","middle")
 
-  var aDelay = function(d,i,j){return 500+j*250};
+  // click events
+  sGroups
+        .on("mouseover",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",.7);d3.select(this).selectAll("text").text(function(d){return d.cnt+" kids"})})
+        .on("mouseout",function(d){d3.select(this).selectAll("rect").attr("fill-opacity",1);d3.select(this).selectAll("text").text(function(d){return pct(d.y1 - d.y0)})})
+        .on("click",function(d,i,j){
+          var teacher = sx.domain()[j];
+          var newData =  attemptsDataDist[selectedAssessment][teacher];
+          console.log(attemptsDataDist[selectedAssessment])
+          updateAttempts(newData);
+          attHdr(sx.domain()[j]);
+          var teacherTierData = tableData[selectedAssessment].filter(function(d){if(d[0]===teacher&&d[6]===i.toString()){return d}})
+          updateTable(teacherTierData);                       
+        })
 
-  rects.transition().duration(750).delay(aDelay)
-    .attr("y", function(d) { return sy(d.y1); })
-    .attr("height", function(d) { return sy(d.y0) - sy(d.y1); })
-    .attr("fill-opacity", 1);
+  // initial animations
+  var aDelay = function(d,i,j){return j*150};
+  sGroups.transition().duration(750).delay(aDelay)
+    .attr("transform", function(d) { return "translate(0,"+sy(d.y1)+")"; })
+    .selectAll("rect")
+      .attr("height", function(d) { return sy(d.y0) - sy(d.y1); })
+      .attr("fill-opacity", 1);
 }
-updateComps(data)
+
+updateComps(teacherCompsObj[selectedAssessment])
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// growth stuff //////////////////////////////////
@@ -491,117 +585,24 @@ updateLines(gData)
 //////////////////////////////// table stuff ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-var tHeight = 400//, barHeight = rHeight/rData.length
-var tWidth = $('#table').width()
-var tSvg = d3.select("#table").append("svg").attr("width",tWidth).attr("height",tHeight)
-//var pct = d3.format('%')
- var tData = [
-    ['Student','PY','A1','A2','A3','HS'],
-    ['Julia Fonoimoana',1,1,2,3,3],
-    ['Roger Fonoimoana',1,1,2,3,3],
-    ['Danielle Fonoimoana',1,1,2,3,3],
-    ['John Fonoimoana',1,1,2,3,3],
-    ['Rogerito Fonoimoana',1,1,2,3,3],
-    ['Rachel Tuala',1,1,2,3,3],
-    ['Taylor Tuala',1,1,2,3,3],
-    ['Tai Tuala',1,1,2,3,3],
-    ['Ruth Tuala',1,1,2,3,3],
-    ['Iosua Manu',1,1,2,3,3],
-    ['Siona Manu',1,1,2,3,3]
-]
-
-function newArr(arr){
-  var newLen = Math.floor(Math.random()*arr.length)
-  var shuffleArr = shuffle(arr.slice(1,arr.length))
-  var header = []; header.push(arr[0]);
-  var newArr = shuffleArr.slice(0,newLen)
-  var totalArr = header.concat(newArr)
-  return totalArr
-}
-
-/////////// TABLE COLUMN WIDTHS /////////////
-var i,j;
-var tSpacing = [], tBreaks = [], mainCol = .35
-for(i=0;i<tData[0].length;i++){
-  if(i===0){tSpacing.push(tWidth*mainCol)}
-  else{tSpacing.push(tWidth*(1-mainCol)/(tData[0].length-1))}
-}
-for(i=0;i<tSpacing.length;i++){
-  var val = 0
-  for(j=0;j<i;j++){
-    val = val + tSpacing[j]
+var t = $('#table').dataTable({
+  "bPaginate": false,
+  "sDom": 'TC<"clear">lfrtip',
+  "sScrollY": "315px",
+  "bScrollCollapse": true,
+  "oTableTools": {
+      "aButtons":["copy","print","xls"],
+      "sSwfPath": "/static/DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls_pdf.swf"
   }
-  tBreaks.push(val)
-}
-/////////////////////////////////////////////
+});
 
-function update(tData){
-
-  // UPDATE
-  tSvg.selectAll("g").remove();
-  var tGroups = tSvg.selectAll("g").data(tData)
-  //tGroups.transition().duration(750).attr("transform",function(d,i){return "translate(0,"+tHeight/12*i+")"})
-
-  // ENTER
-  tGroups.enter().append("g")
-  var tRows = tGroups.append("rect")
-    .attr("fill","none")
-    .attr("stroke","black")
-    .attr("stroke-width",".05px")
-    .attr("width",tWidth)
-    .attr("height",tHeight/12-3)
-    .attr("rx",6)
-    .attr("ry",6)
-  var tData = tGroups.selectAll("text").data(function(d){return d}).enter().append('text')
-    .text(function(d){return d})
-    .attr("fill",function(d,i){if(i>0){return "black"}else{return "black"}})
-    //.attr("fill-opacity",0)
-    .attr("x",function(d,i,j){return 20+tBreaks[i]})
-    .attr("y",22)
-    .style("font-weight",function(d,i,j){if(i>0&&j>0){return "normal"}else{return "bold"}})  
-  tGroups.transition()
-    .duration(750)
-    .attr("transform",function(d,i){return "translate(0,"+(tHeight/12*i+2)+")"})
-    //.text.attr("fill-opacity",1)
-
-  // // EXIT
-  // tGroups.exit()
-  //   .transition()
-  //     .duration(750)
-  //     .style("fill-opacity",0)
-  //     .remove();
-
+function updateTable(rows){
+  t.fnClearTable();
+  t.fnAddData(rows);
 }
 
-update(tData)
+updateTable(tableData[selectedAssessment])
 
-/*setInterval(function(){
-  update(newArr(tData))
-},1500)*/
-
-// setInterval(function() {
-//   update(shuffle(tData)
-//       .slice(0, Math.floor(Math.random() * tData.length))
-//       .sort());
-// }, 1500);
-
-function renew(tData) {
-  update(shuffle(tData)
-      .slice(0, Math.floor(Math.random() * tData.length))
-      .sort());
-};
-
-// Shuffles the input array.
-function shuffle(array) {
-  var m = array.length, t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = array[m], array[m] = array[i], array[i] = t;
-  }
-  return array;
-}
-
-//  
 
 </script>
 

@@ -56,8 +56,10 @@ def dash():
 def drill(grade="1",assessment="PLC - Subtraction"):
 	teacher_comps_score_data = teacher_comps_score(grade)
 	assessment_data = recent_assessment_data()
+	single_teacher_attempts_data = single_teacher_attempts(grade)
+	table_data = student_table_data(grade)
 	return render_template('drill.html',teacher_comps_score=teacher_comps_score_data,assessment=[assessment.encode('ascii','ignore')],
-		grade=grade,assessment_data=assessment_data)
+		grade=grade,assessment_data=assessment_data,single_teacher_attempts_data=single_teacher_attempts_data,table_data=table_data)
 
 # tag assessments to standards
 @login_required
