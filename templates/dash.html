@@ -23,7 +23,7 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
     <!-- jQuery -->
-    <script src="/static/jQuery/jQuery-1.9.1.js" charset="utf-8"></script>
+    <!--<script src="/static/jQuery/jQuery-1.9.1.js" charset="utf-8"></script>-->
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
@@ -122,7 +122,7 @@
 
 var selectedGrade = 1 // default to 1st grade
 var data = {{grade_data|safe}}
-var gTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.count+" students"; });
+//var gTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.count+" students"; });
 var gWidth = $('#grade').width(), gHeight = gWidth*1, barWidth = gWidth/data.length*.95, bottomMargin = gHeight * .1, aspect = gHeight/gWidth
 var barColor = d3.scale.ordinal().range(["#36648B","#4F94CD","#9ACD32",'#698B22']).domain(['K','1','2','3','4','5','6'])
 
