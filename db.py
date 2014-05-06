@@ -10,7 +10,7 @@ path = cwd+'/static/standards_data_complete.csv'
 
 ############ DB CONNECTION ############ 
 
-production = True # set this to true if pushing changes to production server (heroku) else keep false on development box
+production = False # set this to true if pushing changes to production server (heroku) else keep false on development box
 
 if production == False:
 
