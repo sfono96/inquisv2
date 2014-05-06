@@ -20,7 +20,7 @@
     <!-- d3.js -->
     <script src="/static/d3/d3.min.js" charset="utf-8"></script>
     <script src="/static/d3-tip/d3-tip.js" charset="utf-8"></script>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
 
     <!-- jQuery -->
     <script src="/static/jQuery/jquery-1.9.1.js" charset="utf-8"></script>
@@ -541,7 +541,6 @@ var gcolor = ["#B6A754","#77BA9B","#EE8D09","#B5B5B5","#558188","lightgrey"]
 //               [{"attempt":1,"score":.9,"teacher":'Little'},{"attempt":2,"score":1.7,"teacher":'Little'},{"attempt":3,"score":2,"teacher":'Little'}]
 // ]
 
-
 var aTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d[0].teacher});
 
 var line = d3.svg.line()
@@ -613,7 +612,7 @@ updateLines(growthObj[selectedAssessment])
 //////////////////////////////// table stuff ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-var t = $('#table').dataTable({
+t = $('#table').dataTable({
   "bLengthChange":false,
   "bPaginate": true,
   "sDom": 'TC<"clear">lfrtip',
