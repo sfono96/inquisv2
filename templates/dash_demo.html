@@ -187,7 +187,7 @@ gCols
     .on("click",function(d){gCols.selectAll("rect").classed("clicked",false);
                             d3.select(this).selectAll("rect").classed("clicked",true);
                             getAssessments(rObj[d.grade]);
-                            //getStandards(stObj[d.grade]);
+                            getStandards(stObj[d.grade]);
 })
 
 gSvg.append("g").attr("class","x axis")
@@ -502,38 +502,70 @@ var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.descripti
 stSvg.call(tip)
 
 var clicked = false
-function getStandards(data){
+// function getStandards(data){
     
+//     stSvg.selectAll("g").remove();
+
+//     var rowHeaders = stSvg.selectAll("g.headers").data(data).enter().append("g").attr("transform",function(d,i){ return "translate(0,"+(1+i*stHeight/5)+")";})
+//     var rows = stSvg.selectAll("g.rows").data(data).enter().append("g").attr("transform",function(d,i){ return "translate(50,"+(1+i*stHeight/5)+")";})
+//     var bars = rows.selectAll("rect").data(function(d){return d.stData;}).enter().append("rect")
+//             .attr("width",stHeight/5.1)
+//             .attr("height",stHeight/5.1)
+//             .attr("fill",function(d,i,j){return colorMe(d.score)})
+//             .on("mouseover",function(d){d3.select(this).attr("stroke","black").attr("stroke-width","2px")})
+//             .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
+//             .attr("rx",6)
+//             .attr("ry",6)
+//             .attr("x",function(d,i){return i*(stHeight/5)})
+//             .attr("fill-opacity",.1)
+//     var text = rowHeaders.append("text")
+//             .text(function(d){return d.name})
+//             .attr("y",30)
+
+//     rowHeaders
+//         .on("mouseover",tip.show)
+//         .on("mouseout",tip.hide)
+
+//     var transition = bars.transition().duration(400),
+//         delay = function(d,i){return i*stHeight/5};
+
+//     transition.delay(delay).attr("fill-opacity",1)//.attr("x",function(d,i){return buffer+i*rWidth*1.01})
+// }
+
+function getStandards(standards){
+
     stSvg.selectAll("g").remove();
 
-    var rowHeaders = stSvg.selectAll("g.headers").data(data).enter().append("g").attr("transform",function(d,i){ return "translate(0,"+(1+i*stHeight/5)+")";})
-    var rows = stSvg.selectAll("g.rows").data(data).enter().append("g").attr("transform",function(d,i){ return "translate(50,"+(1+i*stHeight/5)+")";})
-    var bars = rows.selectAll("rect").data(function(d){return d.stData;}).enter().append("rect")
-            .attr("width",stHeight/5.1)
-            .attr("height",stHeight/5.1)
-            .attr("fill",function(d,i,j){return colorMe(d.score)})
-            .on("mouseover",function(d){d3.select(this).attr("stroke","black").attr("stroke-width","2px")})
-            .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
-            .attr("rx",6)
-            .attr("ry",6)
-            .attr("x",function(d,i){return i*(stHeight/5)})
-            .attr("fill-opacity",.1)
-    var text = rowHeaders.append("text")
-            .text(function(d){return d.name})
-            .attr("y",30)
+    var colHeaders = stSvg.selectAll("g.headers").data(standards).enter().append("g").attr("transform",function(d,i){return "translate("+i*stWidth/5+",0)"})
+    var text = colHeaders.append("text")
+        .text(function(d){return d.name})
+        .style("text-anchor","middle")
+        .attr("y",30)
+        .attr("x",stWidth/5/2)
+        .style("font-size","30px")
+    colHeaders
+        .on("mouseover.tooltip",tip.show)
+        .on("mouseout.tooltip",tip.hide)
 
-    rowHeaders
-        .on("mouseover",tip.show)
-        .on("mouseout",tip.hide)
+    var cols = stSvg.selectAll("g.cols").data(standards).enter().append("g").attr("transform",function(d,i){return "translate("+(35+i*stWidth/5)+",0)"})
+    var bars = cols.selectAll("rect").data(function(d){return d.stData}).enter().append("rect")
+        .attr("width",stHeight/5.1)
+        .attr("height",stHeight/5.1)
+        .attr("fill",function(d,i,j){return colorMe(d.score)})
+        .on("mouseover",function(d){d3.select(this).attr("stroke","black").attr("stroke-width","2px")})
+        .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
+        .attr("rx",6)
+        .attr("ry",6)
+        .attr("x",function(d,i){return (i%3)*stHeight/5})
+        .attr("y",function(d,i){return (Math.ceil((i+1)/3))*(stHeight/5)})
+        .attr("fill-opacity",.1)
 
     var transition = bars.transition().duration(400),
-        delay = function(d,i){return i*stHeight/5};
+        delay = function(d,i){return i*60};
 
     transition.delay(delay).attr("fill-opacity",1)//.attr("x",function(d,i){return buffer+i*rWidth*1.01})
 }
-
 getStandards(standards)
-
 // window resize
 $(window).resize(function() {
   var stWidth = $("#standards").width();

@@ -45,7 +45,7 @@ cursor = conn.cursor()
 
 ####### CHART 1 - Grade level data object 
 def grade_level_data():
-	sql = 'SELECT grade_level, ROUND(AVG(proficient),2) ppa, COUNT(*) students FROM vw_average_high_scores GROUP BY grade_level'
+	sql = 'SELECT grade_level, ROUND(AVG(proficient),2) ppa, COUNT(*) students FROM vw_average_high_scores WHERE grade_level IS NOT NULL GROUP BY grade_level'
 	cursor.execute(sql)
 	rs = cursor.fetchall()
 	obj = [{"grade":r[0],"ppa":str(r[1]),"count":str(r[2])} for r in rs]
@@ -53,7 +53,8 @@ def grade_level_data():
 
 ####### CHART 2 - Assessments by grade level (last 8 assessments)
 def recent_assessment_data():
-	sql = 'SELECT * FROM vw_assessment_averages WHERE rowcnt <= 8'
+	#sql = 'SELECT * FROM vw_assessment_averages WHERE rowcnt <= 8 AND grade_level IS NOT NULL'
+	sql = 'SELECT * FROM vw_assessment_averages WHERE grade_level IS NOT NULL'
 	cursor.execute(sql)
 	rs = cursor.fetchall()
 	grades = set(sorted([r[0] for r in rs]))
@@ -97,3 +98,25 @@ def student_table_data(grade):
 	for a in assessments:
 		obj[a] = [[r[8],r[3],170,str(r[4]),str(r[5]),str(r[6]),str(r[7])] for r in rs if r[1] == a]
 	return obj
+
+####### CHART 5 - Teacher Comps - Growth Line Chart
+def teacher_comps_growth(grade):
+	sql = 'SELECT * FROM vw_student_attempts_cumulative_flat WHERE assessment_group_name IS NOT NULL AND grade_level = %s ORDER BY 1,2,3,4' % grade
+	cursor.execute(sql)
+	rs = cursor.fetchall()
+	obj = {}
+	assessments = set([r[1] for r in rs])
+	for a in assessments:
+		obj[a] = []
+		relevant_teachers = set([r[2] for r in rs if r[1] == a])
+		for t in relevant_teachers:
+			arr = []
+			for r in rs:
+				for i in range(3,6):
+					if r[i] is not None and r[2] == t and r[1] == a:
+						arr.append({"attempt":str(i-2),"score":str(r[i]),"teacher":t})
+			obj[a].append(arr)
+	return obj
+
+# for r in teacher_comps_growth("4")['PLC -Mult.3/4digit by 1 test']:
+# 	print r
