@@ -19,6 +19,7 @@
 
     <!-- d3.js -->
     <script src="/static/d3/d3.min.js" charset="utf-8"></script>
+    <script src="/static/d3-tip/d3-tip.js" charset="utf-8"></script>
     <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
 
     <!-- jQuery -->
@@ -68,7 +69,7 @@
             <!-- <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li> -->
-            <li><a href="#">Sam Fonoimoana</a></li>
+           <!--  <li><a href="#">Sam Fonoimoana</a></li> -->
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -76,6 +77,11 @@
 
     <div class="container">
         <div id="page-wrapper">
+<!--             <div class="row">
+                <div class = "col-lg-12">
+                    <h3 class = "page-header">Grade Level Dashboard</h3>
+                </div>
+            </div>  -->         
             <!-- first row is recent assessments and student table -->
             <div class="row" style="margin-top:20px">
                 
@@ -83,11 +89,11 @@
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Recents</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Assessments</b>
                         </div>
                         <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div id='recents'></div>
+                        <div class="panel-body" style="height:431px;overflow:hidden">
+                            <div id='recents' style="overflow-y:auto;overflow-x:hidden;height:100%;padding-right:15px"></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -134,7 +140,7 @@
             </div><!-- /first row -->
 
             <!-- second row is attempts and teacher comps -->
-            <div class="row" style="margin-top:20px">
+            <div class="row">
                 
                 <!-- recent assessments -->
                 <div class="col-lg-4">
@@ -214,6 +220,7 @@ var teacherCompsObj = {{teacher_comps_score|safe}}
 var selectedAssessment = {{assessment|safe}}[0]
 var attemptsDataDist = {{single_teacher_attempts_data|safe}}
 var tableData = {{table_data|safe}}
+var growthObj = {{growth|safe}}
 
 // function myIdx(){
 //   var idx=0;
@@ -240,13 +247,13 @@ var tableData = {{table_data|safe}}
 //var rSvg = d3.select("#recents").append("svg").attr("width",rWidth).attr("height",rHeight)
 var pct = d3.format('%')
 
-var rWidth = $('#recents').width(),rHeight = 400, barHeight = rHeight/8.5, rAspect = rHeight/rWidth
+var rWidth = $('#recents').width(),rHeight = 500, barHeight = 400/10, rAspect = rHeight/rWidth
 var rSvg = d3.select("#recents").append("svg")
     .attr("preserveAspectRatio", "xMidYMid")
     .attr("viewBox", "0 0 "+rWidth+" "+rHeight)
     .attr("width", rWidth)
     .attr("height", rWidth * rAspect );
-var colSpacing = [0,.15,.35,.80]
+var colSpacing = [0,.15,.32,.80]
 
 function colorMe(num){
     if(num===0){return "#DCDCDC"}
@@ -280,7 +287,7 @@ function getAssessments(rData){
       .text(function(d){return d.assessment.replace("PLC","")})
       .attr("fill","black")
       .attr("fill-opacity",0)
-      .attr("x",rWidth*.35)
+      .attr("x",rWidth*.32)
 
   var rStrength = rRows.append("g")
       .attr("transform","translate(0,0)")
@@ -296,8 +303,10 @@ function getAssessments(rData){
   var rStrengthText = rStrength.append("text")
       .text(function(d,i){return pct(d.strength);})
       .style("font-weight","bold")
+      .style("text-anchor","middle")
       .attr("fill-opacity",0)
       .attr("fill","white")
+      .attr("x",12)
 
   rStrength
     .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
@@ -310,7 +319,7 @@ function getAssessments(rData){
                             updateComps(teacherCompsObj[selectedAssessment]);
                             tblHdr(selectedAssessment);
                             updateTable(tableData[selectedAssessment]);
-                            // updateLines(newGData());
+                            updateLines(growthObj[selectedAssessment]);
                           })
 
   var rDelay = function(d,i){return i*50};
@@ -514,49 +523,61 @@ updateComps(teacherCompsObj[selectedAssessment])
 ////////////////////////////////////////////////////////////////////////////////
 
 var gWidth = $('#growth').width()
-var gHeight = 200
+var gHeightFull = 200
+var gHeight = 190
 
-var gSvg = d3.select("#growth").append("svg").attr("width",gWidth).attr("height",gHeight)
+var gSvg = d3.select("#growth").append("svg").attr("width",gWidth).attr("height",gHeightFull)
 
 var gx = d3.scale.ordinal().domain([1,2,3]).rangeBands([0,gWidth]);
-var gy = d3.scale.linear().domain([0,4]).rangeRound([gHeight,0]);
+var gy = d3.scale.linear().rangeRound([gHeight,0]);
 //var gcolor = ["#FFF2E7","#D0CABF","#B9B1A8","#DE8642","#4B4D52"]
 //var gcolor = ["#393939","#FF5A09","#F3843E","#FF9900","#6E6E6E"]
-var gcolor = ["#B6A754","#77BA9B","#EE8D09","#B5B5B5","#558188"]
+var gcolor = ["#B6A754","#77BA9B","#EE8D09","#B5B5B5","#558188","lightgrey"]
 
-var gData = [
-              [{"attempt":1,"score":1.9},{"attempt":2,"score":2.2},{"attempt":3,"score":2.3}],
-              [{"attempt":1,"score":1.0},{"attempt":2,"score":1.2},{"attempt":3,"score":1.6}],
-              [{"attempt":1,"score":2.3},{"attempt":2,"score":2.8},{"attempt":3,"score":3.5}],
-              [{"attempt":1,"score":.9},{"attempt":2,"score":1.7},{"attempt":3,"score":2}]
-]
+// var gData = [
+//               [{"attempt":1,"score":1.9,"teacher":'Remkus'},{"attempt":2,"score":2.2,"teacher":'Remkus'},{"attempt":3,"score":2.3,"teacher":'Remkus'}],
+//               [{"attempt":1,"score":1.0,"teacher":'Conklin'},{"attempt":2,"score":1.2,"teacher":'Conklin'},{"attempt":3,"score":1.6,"teacher":'Conklin'}],
+//               [{"attempt":1,"score":2.3,"teacher":'Marker'},{"attempt":2,"score":2.8,"teacher":'Marker'},{"attempt":3,"score":3.5,"teacher":'Marker'}],
+//               [{"attempt":1,"score":.9,"teacher":'Little'},{"attempt":2,"score":1.7,"teacher":'Little'},{"attempt":3,"score":2,"teacher":'Little'}]
+// ]
 
-function newGData() {
-  var arr = [
-                [{"attempt":1,"score":1+Math.random()},{"attempt":2,"score":2.1+Math.random()},{"attempt":3,"score":2.2+Math.random()}],
-                [{"attempt":1,"score":.2+Math.random()},{"attempt":2,"score":.5+Math.random()},{"attempt":3,"score":1+Math.random()}],
-                [{"attempt":1,"score":1.3+Math.random()},{"attempt":2,"score":2+Math.random()},{"attempt":3,"score":3+Math.random()}],
-                [{"attempt":1,"score":.2+Math.random()},{"attempt":2,"score":1+Math.random()},{"attempt":3,"score":1.5+Math.random()}]
-  ]
-  return arr
-}
+
+var aTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d[0].teacher});
 
 var line = d3.svg.line()
   .interpolate('linear') // monotone for smooth, linear for straight
   .x(function(d){return gx(d.attempt);})
   .y(function(d){return gy(d.score);})
 
-// var yAxis = d3.svg.axis().scale(gx).orient("top");
-// gSvg.append("g").attr("class","x axis").attr("transform","translate(0,0)").call(xAxis);
-
 function updateLines(gData){
+  
+  // clear out old
   gSvg.selectAll("g").remove();
+  
+  // calculate new y axis scale
+  var i,j, averages = []
+  for(i=0;i<gData.length;i++){
+    for(j=0;j<gData[i].length;j++){
+      averages.push(gData[i][j].score)
+    }
+  }
+
+  var max = Math.round(Math.ceil(Math.max.apply(Math,averages)),1)
+  var min = Math.round(Math.floor(Math.min.apply(Math,averages)),1)
+  console.log(min, max)
+
+  gy.domain([min,max])
+
+  // building the new chart
   var gGrps = gSvg.selectAll("g").data(gData).enter().append("g")
   // var gLines = gGrps.selectAll("g").data(function(d){return d.scores}).enter().append("g")
+
+  var yAxis = d3.svg.axis().scale(gy).orient("left").ticks([4]);
+  var xAxis = d3.svg.axis().scale(gx).orient("top");
     
   gGrps.append("path")
     .attr("d",function(d){return line(d);})
-    .attr("transform","translate("+(0,gWidth)/6+",0)")
+    .attr("transform","translate("+(25+gWidth/6)+",5)")
     .style("stroke-dasharray",function(d,i){if(i===1){return "0,0"}else{return "6,3"}})
     .attr("fill","none")
     .attr("stroke",function(d,i,j){return gcolor[i]})
@@ -571,22 +592,30 @@ function updateLines(gData){
         .attr("fill",function(d,i,j){return gcolor[j]})
         //.attr("stroke","orange")
         //.attr("stroke-width","4px")
-        .attr("transform","translate("+(0,gWidth)/6+",0)")
+        .attr("transform","translate("+(25+gWidth/6)+",5)")
 
-// var aDelay = function(d,i,j){return 500+j*250};
+  // add the axes
+  gSvg.append("g").attr("class","y axis").attr("transform","translate(25,5)").call(yAxis);
+  //gSvg.append("g").attr("class","x axis").attr("transform","translate(16,"+(gHeight+5)+")").call(xAxis);
 
-// rects.transition().duration(750).delay(aDelay)
-//   .attr("y", function(d) { return y(d.y1); })
-//   .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-//   .attr("fill-opacity", 1);
+  gGrps.call(aTip)
+
+  gGrps
+    .on("mouseover.tooltip",aTip.show)
+    .on("mouseout.tooltip",aTip.hide)
+    .on("mouseover",function(d){d3.select(this).selectAll("path").attr("stroke-width","2px")})
+    .on("mouseout",function(d){d3.select(this).selectAll("path").attr("stroke-width","4px")})
 }
-updateLines(gData)
+
+updateLines(growthObj[selectedAssessment])
+
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// table stuff ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 var t = $('#table').dataTable({
-  "bPaginate": false,
+  "bLengthChange":false,
+  "bPaginate": true,
   "sDom": 'TC<"clear">lfrtip',
   "sScrollY": "315px",
   "bScrollCollapse": true,

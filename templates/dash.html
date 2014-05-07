@@ -67,7 +67,7 @@
             <!-- <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li> -->
-            <li><a href="#">Sam Fonoimoana</a></li>
+            <!-- <li><a href="#">Sam Fonoimoana</a></li> -->
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -76,11 +76,11 @@
     <div class="container">
         <div id="page-wrapper">
 
-            <!-- <div class="row">
+            <div class="row">
                 <div class = "col-lg-12">
                     <h3 class = "page-header">Grade Level Dashboard</h3>
                 </div>
-            </div> -->
+            </div>
 
             <div class="row" style="margin-top:20px">
                 <!-- domain -->
@@ -88,7 +88,7 @@
                     <!-- grade level columns -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Standard Progess</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Standards Progess</b>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -102,11 +102,11 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Recent Assessments</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Assessments</b>
                         </div>
                         <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div id='assessment'></div>
+                        <div class="panel-body" style="height:558px;overflow:hidden">
+                            <div id='assessment' style="overflow-y:auto;overflow-x:hidden;height:100%;padding-right:15px"></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -124,10 +124,17 @@ var selectedGrade = 1 // default to 1st grade
 var data = {{grade_data|safe}}
 var gTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.count+" students"; });
 var gWidth = $('#grade').width(), gHeight = gWidth*1, barWidth = gWidth/data.length*.95, bottomMargin = gHeight * .1, aspect = gHeight/gWidth
+var barColor = d3.scale.ordinal().range(["#36648B","#4F94CD","#9ACD32",'#698B22']).domain(['K','1','2','3','4','5','6'])
+
+// if(num===0){return "#DCDCDC"}
+//     else if(num<=.69){return "#36648B"}
+//     else if(num>.69&&num<=.79){return "#4F94CD"}
+//     else if(num>.79&&num<=.89){return "#9ACD32"}
+//     else{return '#698B22'}
 
 var data = {{grade_data|safe}}
             
-var gx = d3.scale.ordinal().domain(data.map(function(d){return d.grade})).rangeBands([0,gWidth-2]);
+var gx = d3.scale.ordinal().domain(data.map(function(d){if(d.grade>0){return d.grade}else{return 'K'}})).rangeBands([0,gWidth-2]);
 var gy = d3.scale.linear().domain([0,1]).range([gHeight,0]);
 var xAxis = d3.svg.axis().scale(gx).orient("bottom")
 var pct = d3.format('%')
@@ -149,8 +156,9 @@ var gBars = gCols.append("rect")
     .classed("clicked",false)
     .attr("width",barWidth)
     .attr("height",0)
+    .attr("fill",function(d){return barColor(d.ppa)})
     //.attr("fill",function(d){return colorMe(d.ppa)})
-    .attr("fill","olive")
+    //.attr("fill","olive")
     .attr("y",function(d){return gHeight-bottomMargin})
     .attr("fill-opacity",1)
 var gText = gCols.append("text")
@@ -162,10 +170,10 @@ var gText = gCols.append("text")
     .style("text-anchor","middle")
 
 gCols
-    .on("mouseover",gTip.show)
-    .on("mouseout",gTip.hide)
-    //.on("mouseover",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",.7).attr("stroke","white");})
-    //.on("mouseout",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",1).attr("stroke","none")})
+    .on("mouseover.tooltip",gTip.show)
+    .on("mouseout.tooltip",gTip.hide)
+    .on("mouseover",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",.7).attr("stroke","white");})
+    .on("mouseout",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",1).attr("stroke","none")})
     .on("click",function(d){gCols.selectAll("rect").classed("clicked",false);
                             d3.select(this).selectAll("rect").classed("clicked",true);
                             getAssessments(rObj[d.grade]);
@@ -210,13 +218,14 @@ var rObj = {{assessment_data|safe}}
 //                 ], ....
 
 
-var rWidth = $('#assessment').width(),rHeight = rWidth*1, barHeight = rHeight/8.5, rAspect = rHeight/rWidth
+//var rWidth = $('#assessment').width(),rHeight = rWidth*1, barHeight = rHeight/8.5, rAspect = rHeight/rWidth
+var rWidth = $('#assessment').width(),rHeight = rWidth*2, barHeight = 50, rAspect = rHeight/rWidth
 var rSvg = d3.select("#assessment").append("svg")
     .attr("preserveAspectRatio", "xMidYMid")
     .attr("viewBox", "0 0 "+rWidth+" "+rHeight)
     .attr("width", rWidth)
     .attr("height", rWidth * rAspect );
-var colSpacing = [0,.15,.35,.80]
+var colSpacing = [0,.15,.30,.80]
 var pct = d3.format('%')
 // make the new
 var rHeaders = rSvg.selectAll("g.rHeaders").data(["Date","Domain","Assessment","% Proficient"]).enter().append("g")
@@ -249,7 +258,7 @@ function getAssessments(rData){
         .text(function(d){return d.assessment.replace("PLC","")})
         .attr("fill","black")
         .attr("fill-opacity",0)
-        .attr("x",rWidth*.35)
+        .attr("x",rWidth*.30)
 
     var rStrength = rRows.append("g")
         .attr("transform","translate(0,0)")
@@ -258,13 +267,14 @@ function getAssessments(rData){
         .attr("cy",-5)
         .attr("r",barHeight*.45)
         .attr("fill",function(d,i){return colorMe(d.strength)})
-        .attr("cx",12)
+        .attr("cx",0)
         .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
         .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
 
     var rStrengthText = rStrength.append("text")
         .text(function(d,i){return pct(d.strength);})
         .style("font-weight","bold")
+        .style("text-anchor","middle")
         .attr("fill-opacity",0)
         .attr("fill","white")
 
@@ -303,8 +313,8 @@ $(window).resize(function() {
 function colorMe(num){
     if(num===0){return "#DCDCDC"}
     else if(num<=.69){return "#36648B"}
-    else if(num>.7&&num<=.79){return "#4F94CD"}
-    else if(num>.8&&num<=.89){return "#9ACD32"}
+    else if(num>.69&&num<=.79){return "#4F94CD"}
+    else if(num>.79&&num<=.89){return "#9ACD32"}
     else{return '#698B22'}
 }
 
