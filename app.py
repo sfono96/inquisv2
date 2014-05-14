@@ -53,7 +53,7 @@ def dash():
 @login_required
 @app.route('/drill',methods=['GET','POST'])
 @app.route('/drill/<grade>/<assessment>',methods=['GET','POST'])
-def drill(grade="1",assessment="PLC - Subtraction"):
+def drill(grade="4",assessment="PLC - basic mult. facts test"):
 	teacher_comps_score_data = teacher_comps_score(grade)
 	assessment_data = recent_assessment_data()
 	single_teacher_attempts_data = single_teacher_attempts(grade)
@@ -68,6 +68,23 @@ def drill(grade="1",assessment="PLC - Subtraction"):
 @app.route('/tag',methods=['GET','POST'])
 def tag():
 	return render_template('tag.html')
+
+
+# main - DEMO
+@login_required
+@app.route('/dash_demo',methods=['GET','POST'])
+def dash_demo():
+	grade_data = grade_level_data() 
+	assessment_data = recent_assessment_data() 
+	return render_template('dash_demo.html',grade_data=grade_data, assessment_data=assessment_data)
+
+# student - DEMO
+@login_required
+@app.route('/student_demo',methods=['GET','POST'])
+def student_demo():
+	grade_data = grade_level_data() 
+	assessment_data = recent_assessment_data() 
+	return render_template('student_demo.html',grade_data=grade_data, assessment_data=assessment_data)
 
 
 ################ data API's ################

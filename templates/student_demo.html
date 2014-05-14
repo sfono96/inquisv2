@@ -44,7 +44,7 @@
         border-radius: 2px;
       }
       .hovered {stroke: black;stroke-width: 2px;fill-opacity:.8;}
-      .clicked text {fill-opacity:1;}
+      .clicked text {fill-opacity:.8;}
       .clicked rect {fill-opacity:.8;stroke: black;stroke-width: 2.5px;}
     </style>
 
@@ -68,7 +68,7 @@
             <!-- <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li> -->
-            <li><a href="#">Vicki Smith</a></li>
+            <li><a href="#">Julia Fonoimoana</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -85,29 +85,47 @@
 
             <div class="row" style="margin-top:20px">
                 <!-- domain -->
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <!-- grade level columns -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i><b>Standards Progess</b>
                         </div>
                         <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div id='grade'></div>
+                        <div class="panel-body" style="height:350px">
+                            <div id='standards'></div>
+                            <div id='description'></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
                 </div>
                 
                 <!-- standards mapped -->
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Recent Assessments</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Performance</b>
                         </div>
                         <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div id='assessment'></div>
+                        <div class="panel-body" style="height:350px">
+                            <div id='strength' style="margin-bottom:15px"></div>
+                            <div class="btn-group btn-group-justified">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" style="background-color:#F8F8F8;">Julia<br>
+                                        <h2 id="s-avg" ></h2>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" style="background-color:#F8F8F8">Class<br>
+                                        <h2 id="c-avg" ></h2>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" style="background-color:#F8F8F8">Grade<br>
+                                        <h2 id="g-avg" ></h2>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -116,31 +134,62 @@
 
             <div class = "row">                
                 <!-- cluster -->
-                <div class="col-lg-8">
+                <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Standards Progress - Detail</b>
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Assessments</b>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id='standards'></div>
+                            <div id='assessment'></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
                 </div>
                 <!-- cluster -->
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Standards Description</b>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body" style="height:252px;overflow:hidden">
-                            <div id='description' style="font-size:16px;overflow-y:auto;overflow-x:hidden;height:100%;padding-right:15px"></div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
+             
+                <div class="col-lg-3">
+                    <ul class="list-group">
+                        <li class="list-group-item"><img src="/static/imgs/lz.png" height="35" style="margin-top:10px"></li>
+                        <li class="list-group-item" style="margin-top:-10px">
+                            <a href="http://learnzillion.com/lessons/523-locate-benchmark-numbers-on-a-number-line">Locate benchmark numbers on a number line</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://learnzillion.com/lessons/524-round-numbers-to-the-leading-digit-using-a-number-line">Round numbers to the leading digit using a number line</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://learnzillion.com/lessons/525-round-numbers-to-a-specified-place-on-a-number-line">Round numbers to a specified place on a number line</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://learnzillion.com/lessons/526-round-9s-using-base-ten-blocks">Round 9's using base ten blocks</a>
+                        </li>
+                    </ul>
                 </div>
+                <div class="col-lg-3">
+                    <ul class="list-group">
+                      <li class="list-group-item"><img src="/static/imgs/khan.png" height="35" style="margin-left:0px"></li>
+                      <li class="list-group-item">
+                            <a href="https://www.khanacademy.org/exercise/rounding_whole_numbers">Rounding Whole Number Exercises - 200 practice questions</a>
+                      </li>
+                      <li class="list-group-item">
+                            <a href="https://www.khanacademy.org/video/rounding-whole-numbers-1">Rounding Whole Numbers - Video Part 1</a>
+                      </li>
+                      <li class="list-group-item">
+                            <a href="https://www.khanacademy.org/video/rounding-whole-numbers-2">Rounding Whole Numbers - Video Part 2</a>
+                      </li>
+                      <li class="list-group-item">
+                            <a href="https://www.khanacademy.org/video/rounding-whole-numbers-3">Rounding Whole Numbers - Video Part 3</a>
+                      </li>
+                    </ul>
+                </div>
+                <!-- <a href="https://www.khanacademy.org/commoncore"><img src="/static/imgs/khan.png" height="35" style="margin-left:10px"></a><br><br>
+                <a href="http://commoncore.pearsoned.com/"><img src="/static/imgs/pearson.png" height="35" style="margin-left:10px"></a><br><br>
+                <a href="http://commoncore.pearsoned.com/"><img src="/static/imgs/sinet.jpg" height="35" style="margin-left:10px"></a><br><br>
+                <a href="http://commoncore.pearsoned.com/"><img src="/static/imgs/mcgraw.png" height="35" style="margin-left:10px"></a><br><br>
+                <a href="http://commoncore.pearsoned.com/"><img src="/static/imgs/lz.png" height="35" style="margin-left:10px"></a> -->
+      
+                        <!-- /.panel-body -->
+          
 
             </div><!-- /row 2 -->
 
@@ -150,95 +199,101 @@
     
 <script type="text/javascript">
 
-$('#description').text('Click on a standard to see more detail.')
+$('#description').text("Click on a standard for detail");
+var selectedGrade = "4" // default
 
-var selectedGrade = "K" // default
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// STRENGTH
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GRADES
+var donutObj = {
+    "4.NF.1": {
+        data:[0,0,1,3],
+        strength: '100%',
+        classAvg: '85%',
+        gradeAvg: '82%'
+    },
+    "4.NF.2": {
+        data:[0,0,1,1],
+        strength: '100%',
+        classAvg: '89%',
+        gradeAvg: '91%'
+    },
+    "4.NBT.1": {
+        data:[0,0,0,1],
+        strength: '100%',
+        classAvg: '91%',
+        gradeAvg: '87%'
+    },
+    "4.NBT.2": {
+        data:[0,1,1,1],
+        strength: '66%',
+        classAvg: '82%',
+        gradeAvg: '83%'
+    },
+    "4.NBT.3": {
+        data:[2,0,0,0],
+        strength: '0%',
+        classAvg: '65%',
+        gradeAvg: '75%'
+    },
+}
 
 
-var gWidth = $('#grade').width(), gHeight = gWidth*.75, barWidth = gWidth/7*.95, bottomMargin = gHeight * .1, aspect = gHeight/gWidth
+var dataset = {
+  data: [2,1,3,6],
+  strength: '75%',
+  classAvg: '70%',
+  gradeAvg: '74%'
+};
 
-var data = [    
-    {"grade":"K","ppa":.6,"count":120,"color":"#9ACD32"},
-    {"grade":"1","ppa":.90,"count":135,"color":"#4F94CD"},
-    {"grade":"2","ppa":.73,"count":100,"color":"#9ACD32"},
-    {"grade":"3","ppa":.78,"count":127,"color":"#9ACD32"},
-    {"grade":"4","ppa":.65,"count":113,"color":"#4F94CD"},
-    {"grade":"5","ppa":.36,"count":115,"color":'#698B22'},
-    {"grade":"6","ppa":.67,"count":154,"color":'#698B22'}
-]
+var dWidth = $('#strength').width(),
+    dHeight = dWidth * .62,
+    radius = Math.min(dWidth, dHeight) / 5 * 3;
 
-/*"#36648B" - 1
-"#4F94CD" - 2
-"#9ACD32" - 3
-'#698B22' - 4*/
-            
-var gx = d3.scale.ordinal().domain(data.map(function(d){return d.grade})).rangeBands([0,gWidth-2]);
-var gy = d3.scale.linear().domain([0,1]).range([gHeight,0]);
-var xAxis = d3.svg.axis().scale(gx).orient("bottom")
-var pct = d3.format('%')
-var gTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.count+" students"; });
+var color = d3.scale.ordinal().range(["#36648B","#4F94CD","#9ACD32","#698B22"]);
 
-var clicked = false
-var gSvg = d3.select("#grade").append("svg")
-    .attr("preserveAspectRatio", "xMidYMid")
-    .attr("viewBox", "0 0 "+gWidth+" "+gHeight)
-    .attr("width", gWidth)
-    .attr("height", gWidth * aspect );
-var gCols = gSvg.selectAll("g").data(data).enter()
+var pie = d3.layout.pie()
+    .value(function(d){return d;})
+    .sort(null);
+
+var arc = d3.svg.arc()
+    .innerRadius(radius - 53)
+    .outerRadius(radius - 21);
+
+var svg = d3.select("#strength").append("svg")
+    .attr("width", dWidth)
+    .attr("height", dHeight)
     .append("g")
-    .attr("transform",function(d,i){ return "translate("+(gWidth/7*i)+",0)";})
+    .attr("transform", "translate(" + dWidth / 2 + "," + dHeight / 2 + ")");
+    
+path = svg.selectAll("path")
+    .data(pie(dataset.data))
+  .enter().append("path")
+    .attr("fill", function(d, i) { return color(d.data); })
+    .attr("d", arc)
+    .each(function(d) { this._current = d; }); // store the initial angles
 
-gCols.call(gTip)
+dText  = svg.append("text").text(dataset.strength).style("font-size","50px").style("text-anchor","middle").attr("y",15)
+$('#s-avg').text(dataset.strength)
+$('#c-avg').text(dataset.classAvg)
+$('#g-avg').text(dataset.gradeAvg)
 
-var gBars = gCols.append("rect")
-    .classed("clicked",false)
-    .attr("width",barWidth)
-    .attr("height",0)
-    .attr("fill",function(d){return d.color})
-    .attr("y",function(d){return gHeight-bottomMargin})
-    .attr("fill-opacity",1)
-var gText = gCols.append("text")
-    .text(function(d){return pct(d.ppa)})
-    .attr("fill","white")
-    .attr("font-size","20px")
-    .attr("y",function(d){return gy(d.ppa)})
-    .attr("x",gWidth/7/2)
-    .style("text-anchor","middle")
-
-gCols
-    .on("mouseover.tooltip",gTip.show)
-    .on("mouseout.tooltip",gTip.hide)
-    .on("mouseover",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",.7).attr("stroke","white")})
-    .on("mouseout",function(d){var x = d3.select(this).selectAll("rect");x.attr("fill-opacity",1).attr("stroke","none")})
-    .on("click",function(d){
-        gCols.classed("clicked",false);
-        d3.select(this).classed("clicked",true);
-        getAssessments(rObj[d.grade]);
-        getStandards(stObj[d.grade]);
-        selectedGrade = d.grade;
-})
-
-gSvg.append("g").attr("class","x axis")
-    .attr("transform", "translate(1," + (gHeight-bottomMargin) + ")")
-    .call(xAxis)
-
-
-var transition = gBars.transition().duration(750),
-    delay = function(d,i){return i*75};
-
-transition.delay(delay)
-    .attr("fill-opacity",1)
-    .attr("height",function(d){return gHeight-gy(d.ppa);})
-    .attr("y",function(d){return gy(d.ppa)-bottomMargin})
-
-// window resize for grades column chart
-$(window).resize(function() {
-  var gWidth = $("#grade").width();
-  gSvg.attr("width", gWidth);
-  gSvg.attr("height", gWidth * aspect);
-});
+function updateDonut(dataset){
+    pct = d3.format('%')
+    path.data(pie(dataset.data))
+    path.transition().duration(750).attrTween("d", arcTween)
+    dText.transition().duration(750).text(dataset.strength)
+    $('#s-avg').text(dataset.strength)
+    $('#c-avg').text(dataset.classAvg)
+    $('#g-avg').text(dataset.gradeAvg)
+    
+    function arcTween(a) {
+      var i = d3.interpolate(this._current, a);
+      this._current = i(0);
+      return function(t) {
+        return arc(i(t));
+      };
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ASSESSMENTS
 
@@ -255,88 +310,87 @@ var rData = [
 ]
 
 var rObj ={
-            "K":[
-                    {"assessment":"Assessment","domain":"Domain","standard":"Standard","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"K.OA","standard":"K.OA.1","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"K.OA","standard":"K.OA.1","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"K.OA","standard":"K.OA.1","date":"1/21","strength":.75},
-                    {"assessment":"PLC-Random Forest","domain":"K.OA","standard":"K.OA.1","date":"1/28","strength":.65},
-                    {"assessment":"PLC-Clustering","domain":"K.NBT","standard":"K.NBT.1","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"K.NBT","standard":"K.NBT.1","date":"2/11","strength":.35},
-                    {"assessment":"PLC-Regression","domain":"K.NBT","standard":"K.NBT.1","date":"2/18","strength":.4},
-                    {"assessment":"PLC-ANOVA","domain":"K.NBT","standard":"K.NBT.1","date":"2/25","strength":.55}
+            "4.NF.1":[
+                    {"assessment":"Recognize fractions - area models","domain":"4.NF","standard":"4.NF.1","date":"9/1","strength":3,"classAvg":2.8},
+                    {"assessment":"Recognize fractions - number lines","domain":"4.NF","standard":"4.NF.1","date":"9/8","strength":4,"classAvg":3.3},
+                    {"assessment":"Generate fractions - area models","domain":"4.NF","standard":"4.NF.1","date":"9/15","strength":4,"classAvg":3.2},
+                    {"assessment":"Generate fractions - number lines","domain":"4.NF","standard":"4.NF.1","date":"9/15","strength":4,"classAvg":3.6},
                 ],
-           "1":[
+           "4.NF.2":[
+                    {"assessment":"Compare fractions using 1/2","domain":"1.OA","standard":"4.NF.2","date":"9/22","strength":3,"classAvg":2.5},
+                    {"assessment":"Compare fractions using whole","domain":"1.OA","date":"9/22","standard":"4.NF.2","strength":4,"classAvg":3.1},
+                ],
+           "4.NBT.1":[
+                    {"assessment":"Place Value Chart - Large Numbers","domain":"2.OA","standard":"4.NBT.1","date":"9/29","strength":4,"classAvg":2.1},
+                ],
+           "4.NBT.2":[
+                    {"assessment":"Numeric Form","domain":"Domain","standard":"4.NBT.2","date":"9/29","strength":4,"classAvg":3.8},
+                    {"assessment":"Word Form","domain":"3.OA","standard":"4.NBT.2","date":"10/6","strength":3,"classAvg":3.1},
+                    {"assessment":"Expanded Form","domain":"3.OA","standard":"4.NBT.2","date":"10/6","strength":2,"classAvg":3.2}
+                ],
+           "4.NBT.3":[
+                    {"assessment":"Locate Numbers - Number Line","domain":"4.OA","standard":"4.NBT.3","date":"10/6","strength":1,"classAvg":1.7},
+                    {"assessment":"Round Numbers - Number Line","domain":"4.OA","standard":"4.NBT.3","date":"10/6","strength":1,"classAvg":1.8},
+                ],
+           "4.MD.1":[
+                    {"assessment":"PLC-Random Forest","domain":"5.OA","standard":"4.NBT.3","date":"1/28","strength":1,"classAvg":1.8},
+                    {"assessment":"PLC-Clustering","domain":"5.NBT","standard":"4.NBT.3","date":"2/4","strength":1,"classAvg":1.8},
+                    {"assessment":"PLC-Gradient Boosting","domain":"5.NBT","standard":"4.NBT.3","date":"2/11","strength":1,"classAvg":1.8},
+                    {"assessment":"PLC-Regression","domain":"5.NBT","standard":"4.NBT.3","date":"2/18","strength":1,"classAvg":1.8},
+                ],
+           "4.MD.2":[
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","standard":"4.NBT.3","date":"1/7","strength":1,"classAvg":1.8},
+                ],
+           "4.MD.3":[
                     {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"1.OA","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"1.OA","date":"1/14","strength":.35},
-                    {"assessment":"PLC-Variables","domain":"1.OA","date":"1/21","strength":.35},
-                    {"assessment":"PLC-Random Forest","domain":"1.OA","date":"1/28","strength":.95},
-                    {"assessment":"PLC-Clustering","domain":"1.NBT","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"1.NBT","date":"2/11","strength":.35}
                 ],
-           "2":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"2.OA","date":"1/7","strength":.26},
-                    {"assessment":"PLC-Division","domain":"2.OA","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"2.OA","date":"1/21","strength":.65}
-                ],
-           "3":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.36},
-                    {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.54},
-                    {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.25},
-                    {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.95},
-                    {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.95},
-                    {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.85},
-                    {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.74},
-            
-                ],
-           "4":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Multiplication","domain":"4.OA","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"4.OA","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"4.OA","date":"1/21","strength":.55},
-                    {"assessment":"PLC-Random Forest","domain":"4.OA","date":"1/28","strength":.85},
-                    {"assessment":"PLC-Clustering","domain":"4.NBT","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"4.NBT","date":"2/11","strength":.35},
-                    {"assessment":"PLC-Regression","domain":"4.NBT","date":"2/18","strength":.84},
-                    {"assessment":"PLC-ANOVA","domain":"4.NBT","date":"2/25","strength":.85}
-                ],
-           "5":[
-                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
-                    {"assessment":"PLC-Random Forest","domain":"5.OA","date":"1/28","strength":.55},
-                    {"assessment":"PLC-Clustering","domain":"5.NBT","date":"2/4","strength":.55},
-                    {"assessment":"PLC-Gradient Boosting","domain":"5.NBT","date":"2/11","strength":.75},
-                    {"assessment":"PLC-Regression","domain":"5.NBT","date":"2/18","strength":.84},
-                    {"assessment":"PLC-ANOVA","domain":"5.NBT","date":"2/25","strength":.65}
-                ],
-           "6":[
+           "4.MD.4":[
                     {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
                     {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
-                    {"assessment":"PLC-Division","domain":"3.OA","date":"1/14","strength":.85},
-                    {"assessment":"PLC-Variables","domain":"3.OA","date":"1/21","strength":.75},
-                    {"assessment":"PLC-Random Forest","domain":"3.OA","date":"1/28","strength":.65},
-                    {"assessment":"PLC-Clustering","domain":"3.NBT","date":"2/4","strength":.45},
-                    {"assessment":"PLC-Gradient Boosting","domain":"3.NBT","date":"2/11","strength":.35},
-                    {"assessment":"PLC-Regression","domain":"3.NBT","date":"2/18","strength":.4},
-                    {"assessment":"PLC-ANOVA","domain":"3.NBT","date":"2/25","strength":.55}
-                ]
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                ],
+           "4.G.1":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                ],
+           "4.G.2":[
+                    {"assessment":"Assessment","domain":"Domain","date":"Date","strength":"% Prof"},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                    {"assessment":"PLC-Multiplication","domain":"3.OA","date":"1/7","strength":.6},
+                ],
 }
 
 
-var rWidth = $('#assessment').width(),rHeight = rWidth*.75, barHeight = rHeight/rData.length, rAspect = rHeight/rWidth
+var rWidth = $('#assessment').width(),rHeight = rWidth*.52, barHeight = 50, rAspect = rHeight/rWidth
 var rSvg = d3.select("#assessment").append("svg")
     .attr("preserveAspectRatio", "xMidYMid")
     .attr("viewBox", "0 0 "+rWidth+" "+rHeight)
     .attr("width", rWidth)
     .attr("height", rWidth * rAspect );
-
+var colSpacing = [0,.13,.30,.78,.90]
 var pct = d3.format('%')
+// make the new
+var rHeaders = rSvg.selectAll("g.rHeaders").data(["Date","Standard","Assessment","Score","Class"]).enter().append("g")
+    .attr("transform",function(d,i){return "translate("+(rWidth*colSpacing[i])+",15)"})
+    .append("text").text(function(d){return d}).attr("fill","black").style("font-weight","bold")
 
 function getAssessments(rData){
+    // zap the old
     rSvg.selectAll("g").remove();
-    var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(10+(i*barHeight))+")"})
+
+    // make the new
+    var rHeaders = rSvg.selectAll("g.rHeaders").data(["Date","Standard","Assessment","Score","Class"]).enter().append("g")
+        .attr("transform",function(d,i){return "translate("+(rWidth*colSpacing[i])+",15)"})
+        .append("text").text(function(d){return d}).attr("fill","black").style("font-weight","bold")
+
+    var rRows = rSvg.selectAll("g.rRows").data(rData).enter().append("g").attr("transform",function(d,i){return "translate(0,"+(60+(i*barHeight))+")"})
     var rDate = rRows.append("text")
         .text(function(d){return d.date})
         .attr("fill","black")
@@ -344,16 +398,26 @@ function getAssessments(rData){
         .attr("x",0)
 
     var rDomain = rRows.append("text")
-        .text(function(d){return d.domain})
+        .text(function(d){return d.standard})
         .attr("fill","black")
         .attr("fill-opacity",0)
-        .attr("x",rWidth*.15)
+        .attr("x",rWidth*colSpacing[1])
 
     var rAssessment = rRows.append("text")
-        .text(function(d){return d.assessment})
+        .text(function(d){return d.assessment.replace("PLC","")})
         .attr("fill","black")
         .attr("fill-opacity",0)
-        .attr("x",rWidth*.35)
+        .attr("x",rWidth*colSpacing[2])
+
+    var rClass = rRows.append("text")
+        .text(function(d){return d.classAvg})
+        .style("font-size","21px")
+        .style("text-anchor","middle")
+        .style("font-weight","bold")
+        .attr("fill","black")
+        .attr("fill-opacity",0)
+        .attr("x",rWidth*colSpacing[4]*1.04)
+        .attr("y",3)
 
     var rStrength = rRows.append("g")
         .attr("transform","translate(0,0)")
@@ -361,37 +425,42 @@ function getAssessments(rData){
     var rCircle = rStrength.append("circle")
         .attr("cy",-5)
         .attr("r",barHeight*.45)
-        .attr("fill",function(d,i){if(i>0){return colorMe(d.strength)}else{return "none"}})
-        .attr("cx",12)
+        .attr("fill",function(d,i){return colorMeTier(d.strength)})
+        .attr("cx",0)
         .on("mouseover",function(d){d3.select(this).attr("stroke","black")})
         .on("mouseout",function(d){d3.select(this).attr("stroke","none")})
 
     var rStrengthText = rStrength.append("text")
-        .text(function(d,i){if(i>0){return pct(d.strength);}else{return d.strength}})
-        .style("font-weight",function(d,i){if(i>0){return "bold"}else{return "normal"}})
+        .text(function(d,i){return d.strength;})
+        .style("font-size","21px")
+        .style("font-weight","bold")
+        .style("text-anchor","middle")
         .attr("fill-opacity",0)
-        .attr("fill",function(d,i){if(i>0){return "white"}else{return "black"}})
+        .attr("fill","white")
+        .attr("y",3)
 
     rStrength
       .on("mouseover",function(d){d3.select(this).selectAll("circle").classed("hovered",true)})
       .on("mouseout",function(d){d3.select(this).selectAll("circle").classed("hovered",false)})
-      .on("click",function(d){var x = d3.select(this).selectAll("circle"); 
+      .on("click",function(d,i){var x = d3.select(this).selectAll("circle"); 
                               rRows.selectAll("circle").classed("clicked",false);
                               x.classed("clicked",true);
-                              window.location.href = 'http://' + window.location.host + '/drill';
+                              //console.log(rObj[selectedGrade][i].assessment);
+                              window.location.href = 'http://' + window.location.host + '/drill/'+ selectedGrade + "/" + rObj[selectedGrade][i].assessment;
                             })
     var mixUp = [7,2,5,1,0,6,4,3]
     var rDelay = function(d,i){return mixUp[i] * 75}
 
 
-    rStrength.transition().duration(1000).attr("transform","translate("+rWidth*.85+",0)")
+    rStrength.transition().duration(1000).attr("transform","translate("+rWidth*colSpacing[3]*1.05+",0)")
+    rClass.transition().duration(1700).attr("fill-opacity",1)
     rDate.transition().duration(1700).attr("fill-opacity",1)
     rDomain.transition().duration(1700).attr("fill-opacity",1)
     rAssessment.transition().duration(1700).attr("fill-opacity",1)
     rStrengthText.transition().duration(2500).attr("fill-opacity",1)
 }
 
-getAssessments(rObj["K"])
+getAssessments(rObj["4.NF.1"])
 
 // window resize
 $(window).resize(function() {
@@ -558,7 +627,7 @@ var stObj = {
                 {"standard":"4.OA.3","score":0},
                 {"standard":"4.OA.4","score":0},
                 {"standard":"4.OA.5","score":0}]},
-            {"name":"4.NBT","description":"Numbers & Operations - Fractions","stData":[
+            {"name":"4.NBT","description":"Numbers & Operations In Base Ten","stData":[
                 {"standard":"4.NBT.1","score":.83},
                 {"standard":"4.NBT.2","score":.73},
                 {"standard":"4.NBT.3","score":.33},
@@ -575,9 +644,9 @@ var stObj = {
                 {"standard":"4.MD.6","score":0},
                 {"standard":"4.MD.7","score":0}]},
             {"name":"4.G","description":"Geometry","stData":[
-                {"standard":"4.MD.1","score":.59},
-                {"standard":"4.MD.2","score":.61},
-                {"standard":"4.MD.3","score":0}]}       
+                {"standard":"4.G.1","score":.59},
+                {"standard":"4.G.2","score":.61},
+                {"standard":"4.G.3","score":0}]}       
     ],
     "5":[
             {"name":"5.NF","description":"Numbers & Fractions","stData":[
@@ -673,10 +742,10 @@ var stObj = {
 }
 
 // tooltip
-var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.description; }); // DOMAIN DESCRIPTION
-var stTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.standard; }); // STANDARD NAME
-stSvg.call(tip)
-stSvg.call(stTip)
+// var tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.description; }); // DOMAIN DESCRIPTION
+// var stTip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d.standard; }); // STANDARD NAME
+// stSvg.call(tip)
+// stSvg.call(stTip)
 
 var clicked = false
 
@@ -687,12 +756,12 @@ function getStandards(standards){
     var dcnt = standards.length
 
     var colHeaders = stSvg.selectAll("g.headers").data(standards).enter().append("g").attr("transform",function(d,i){return "translate("+i*stWidth/dcnt+",0)"})
-    // var text = colHeaders.append("text")
-    //     .text(function(d){return d.name})
-    //     .style("text-anchor","middle")
-    //     .attr("y",30)
-    //     .attr("x",stWidth/dcnt/2)
-    //     .style("font-size","30px")
+/*    var text = colHeaders.append("text")
+        .text(function(d){return d.description})
+        .style("text-anchor","middle")
+        .attr("y",30)
+        .attr("x",stWidth/dcnt/2)
+        .style("font-size","30px")*/
     var text = colHeaders.append("foreignObject")
         .attr("y",-50)
         .attr("x",3)
@@ -700,9 +769,6 @@ function getStandards(standards){
         .attr("width",stWidth/dcnt)
         .append("xhtml:body")
         .html(function(d){return '<div style="font-size:12px;"><center><b>'+d.description+'</b> ('+d.name+')</center></div>'})
-    // colHeaders
-    //     .on("mouseover.tooltip",tip.show)
-    //     .on("mouseout.tooltip",tip.hide)
 
     var cols = stSvg.selectAll("g.cols").data(standards).enter().append("g").attr("transform",function(d,i){return "translate("+(10+i*stWidth/dcnt)+",0)"})
     var standardBlocks = cols.selectAll("g.standards").data(function(d){return d.stData}).enter().append("g")
@@ -742,6 +808,8 @@ function getStandards(standards){
             $('#description').html('<b>'+standard+'</b>: '+standardsObject[selectedGrade][domain][standard]); 
             standardBlocks.classed("clicked",false);
             d3.select(this).classed("clicked",true);
+            getAssessments(rObj[standard]);
+            updateDonut(donutObj[standard]);
         })
 
     var transition = bars.transition().duration(400),
@@ -749,7 +817,7 @@ function getStandards(standards){
 
     transition.delay(delay).attr("fill-opacity",1)//.attr("x",function(d,i){return buffer+i*rWidth*1.01})
 }
-getStandards(stObj["K"])
+getStandards(stObj[selectedGrade])
 // window resize
 $(window).resize(function() {
   var stWidth = $("#standards").width();
@@ -764,6 +832,14 @@ function colorMe(num){
     else if(num<=.5){return "#36648B"}
     else if(num>.5&&num<=.6){return "#4F94CD"}
     else if(num>.6&&num<=.75){return "#9ACD32"}
+    else{return '#698B22'}
+}
+
+function colorMeTier(num){
+    if(num===0){return "#DCDCDC"}
+    else if(num<=1&&num>0){return "#36648B"}
+    else if(num<=2&&num>1){return "#4F94CD"}
+    else if(num<=3&&num>2){return "#9ACD32"}
     else{return '#698B22'}
 }
 
