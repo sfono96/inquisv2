@@ -257,8 +257,8 @@ var colSpacing = [0,.15,.32,.80]
 
 function colorMe(num){
     if(num===0){return "#DCDCDC"}
-    else if(num<=.5){return "#36648B"}
-    else if(num>.5&&num<=.6){return "#4F94CD"}
+    else if(num<=.5){return "#FF6600"}
+    else if(num>.5&&num<=.6){return "#FF9900"}
     else if(num>.6&&num<=.75){return "#9ACD32"}
     else{return '#698B22'}
 }
@@ -345,7 +345,7 @@ asvg = d3.select("#attempts").append("svg").attr("width",width).attr("height",sv
 
 var ax = d3.scale.ordinal().rangeRoundBands([0,width-2],.1)
 var ay = d3.scale.linear().rangeRound([height,0]);
-var color = d3.scale.ordinal().range(['lightgrey','#36648B','#4F94CD','#9ACD32','#698B22']);
+var color = d3.scale.ordinal().range(['lightgrey','#FF6600','#FF9900','#9ACD32','#698B22']);
 //var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
 var axAxis = d3.svg.axis().scale(ax).orient("bottom");
 
@@ -443,7 +443,7 @@ var sSvg = d3.select("#scores").append("svg").attr("width",sWidth).attr("height"
 
 var sx = d3.scale.ordinal().rangeRoundBands([0,sWidth-2],.1)
 var sy = d3.scale.linear().rangeRound([sHeight,0]);
-var scolor = d3.scale.ordinal().range(['lightgrey','#36648B','#4F94CD','#9ACD32','#698B22']);
+var scolor = d3.scale.ordinal().range(['lightgrey','#FF6600','#FF9900','#9ACD32','#698B22']);
 var sxAxis = d3.svg.axis().scale(sx).orient("bottom").ticks(0)
 //var color = d3.scale.ordinal().range(['#698B22','#9ACD32','#4F94CD','#36648B']);
 
@@ -482,7 +482,7 @@ function updateComps(data){
   var rects = sGroups.append("rect")
         .attr("width", sx.rangeBand())
         .attr("height", 0)
-        .attr("fill", function(d) { return color(d.name); })
+        .attr("fill", function(d) { return scolor(d.name); })
         .attr("fill-opacity", 0)
   
   var text = sGroups.append("text")

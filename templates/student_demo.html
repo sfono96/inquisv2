@@ -249,7 +249,7 @@ var dWidth = $('#strength').width(),
     dHeight = dWidth * .62,
     radius = Math.min(dWidth, dHeight) / 5 * 3;
 
-var color = d3.scale.ordinal().range(["#36648B","#4F94CD","#9ACD32","#698B22"]);
+var color = d3.scale.ordinal().range(["#FF6600","#FF9900","#9ACD32","#698B22"]);
 
 var pie = d3.layout.pie()
     .value(function(d){return d;})
@@ -828,17 +828,17 @@ $(window).resize(function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTIONS
 
 function colorMe(num){
-    if(num===0){return "#DCDCDC"}
-    else if(num<=.5){return "#36648B"}
-    else if(num>.5&&num<=.6){return "#4F94CD"}
-    else if(num>.6&&num<=.75){return "#9ACD32"}
-    else{return '#698B22'}
+    if(num===0){return "#DCDCDC"} // grey
+    else if(num<=.5){return "#FF6600"} // orange
+    else if(num>.5&&num<=.6){return "#FF9900"} // light orange
+    else if(num>.6&&num<=.75){return "#9ACD32"} //light green
+    else{return '#698B22'} // dark green
 }
 
 function colorMeTier(num){
     if(num===0){return "#DCDCDC"}
-    else if(num<=1&&num>0){return "#36648B"}
-    else if(num<=2&&num>1){return "#4F94CD"}
+    else if(num<=1&&num>0){return "#FF6600"}
+    else if(num<=2&&num>1){return "#FF9900"}
     else if(num<=3&&num>2){return "#9ACD32"}
     else{return '#698B22'}
 }

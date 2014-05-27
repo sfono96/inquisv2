@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Core Tracks</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bootstrap/css/helper.css" rel="stylesheet">
+
+    <!-- d3.js -->
+    <script src="/static/d3/d3.min.js" charset="utf-8"></script>
+    <script src="/static/d3-tip/d3-tip.js" charset="utf-8"></script>
+    <!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
+
+    <!-- jQuery -->
+    <script src="/static/jQuery/jquery-1.9.1.js" charset="utf-8"></script>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <!-- Datatables + TableTools -->
+    <link href="/static/DataTables-1.9.4/media/css/jquery.dataTables.css" rel="stylesheet">
+    <script src="/static/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
+    <link href="/static/DataTables-1.9.4/extras/TableTools/media/css/TableTools.css" rel="stylesheet">
+    <script src="/static/DataTables-1.9.4/extras/TableTools/media/js/TableTools.min.js"></script>
+
+    <!-- standards file -->
+    <script src="/static/js/standards.js" charset="utf-8"></script>
+
+    <style type="text/css">
+      .axis {font-family: Roboto,Arial; font-size:12px;}
+      .axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
+      .myText {shape-rendering: crispEdges;font-family: Roboto; font-size: 16px}
+      .d3-tip {
+        line-height: 1;
+        font-family: arial,helvetica,sans-serif;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+      }
+      .hovered {stroke: black;stroke-width: 2px;fill-opacity:.8;}
+      .clicked text {fill-opacity:.8;}
+      .clicked rect {fill-opacity:.8;stroke: black;stroke-width: 2.5px;}
+    </style>  
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Pony Express Elementary</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav" style="float:right">
+            <!-- <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li> -->
+             <li><a href="#">Mr. Conklin</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+        <div id="page-wrapper">          
+                <!-- student table -->
+                <div class="col-lg-12" style="margin-top:20px">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i><b>Student Data</b>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table id='table'>
+                              <thead>
+                                <tr>
+                                  <th>Student</th>
+                                  <th>PY</th>
+                                  <th>A1</th>
+                                  <th>A2</th>
+                                  <th>A3</th>
+                                  <th>A4</th>
+                                  <th>A5</th>
+                                  <th>A6</th>
+                                  <th>A7</th>
+                                  <th>A8</th>
+                                  <th>A9</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                </tr>
+                              </tbody>
+
+                            </table>
+                        </div><!-- /.panel-body -->
+                    </div><!-- /.panel -->
+                </div><!-- /.column -->
+            </div><!-- /.page-wrapper -->
+        </div><!-- /.container -->
+    
+<style type="text/css">
+
+
+</style>
+<script type="text/javascript">
+
+var t = $('#table').dataTable({
+  "bLengthChange":false,
+  "bPaginate": false,
+  "sDom": 'TC<"clear">lfrtip',
+  "sScrollY": "600px",
+  "bScrollCollapse": true,
+  "oTableTools": {
+      "aButtons":["copy","print","xls"],
+      "sSwfPath": "/static/DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls_pdf.swf"
+  },
+  "aoColumnDefs":[{
+    "aTargets":[1,2,3,4,5,6,7,8,9,10],
+    "fnCreatedCell":function(nTd,sData,oData,iRow,iCol){
+      var myColor = colorMeTier(sData);
+      $(nTd).css('background',myColor);
+      $(nTd).css('color','white');
+      $(nTd).css('font-weight','bold');  
+    }
+  }]
+})
+
+function updateTable(rows){
+  t.fnClearTable();
+  t.fnAddData(rows);
+}
+
+var rows = [
+  ['Applewhite, Venus',4,4,3,3,3,3,4,4,4,4,3,4],
+  ['Ardis, Terence',2,1,1,1,1,2,2,2,1,2,1,2],
+  ['Bieber, Lisha',3,2,2,4,2,2,1,4,3,4,3,2],
+  ['Bill, Zachary',3,4,3,2,4,4,2,4,3,4,2,4],
+  ['Blomgren, Robert',2,1,2,2,2,1,1,1,1,2,1,1],
+  ['Bumbalough, Hannelore',3,2,3,4,4,4,1,3,3,3,3,3],
+  ['Casarez, Crystal',3,3,4,2,2,3,3,2,3,2,4,3],
+  ['Cedano, Francisco',2,2,2,2,3,3,3,3,3,3,4,3],
+  ['Chace, Maryjane',3,3,3,2,2,1,3,4,4,4,3,3],
+  ['Clutts, Rubi',3,2,3,4,3,3,1,3,2,2,2,2],
+  ['Cutler, Mitch',2,2,2,2,2,2,2,2,2,3,1,2],
+  ['Ditto, Dalton',1,2,2,3,3,3,2,1,1,2,1,2],
+  ['Etienne, Eric',3,4,4,3,2,1,2,2,3,3,3,4],
+  ['Gillison, Grayce',1,1,1,1,1,1,2,2,1,1,1,1],
+  ['Jacobi, Corie',2,2,3,3,4,3,2,2,3,3,2,4],
+  ['Kissel, Dovie',2,3,4,3,2,3,3,3,2,1,1,2],
+  ['Lehto, Clarisa',4,3,3,4,3,3,3,4,3,4,4,3],
+  ['Macmillan, Pearlie',3,4,4,3,4,3,4,2,4,4,2,4],
+  ['Mcatee, Charline',4,4,3,3,3,4,3,4,4,4,3,4],
+  ['Merriman, Yukiko',4,4,4,3,3,3,4,4,3,4,3,3],
+  ['Parker, Virgen',3,2,4,4,4,1,3,2,3,4,2,3],
+  ['Pettengill, Brent',1,2,3,2,1,2,3,2,2,2,1,2],
+  ['Pineda, Iola',3,3,4,4,2,3,1,2,3,3,2,4],
+  ['Poarch, Johnna',1,1,2,1,2,1,1,2,2,1,3,1],
+  ['Schmitz, Shelia',2,2,1,2,1,2,3,3,3,3,2,1],
+  ['Tempel, Camelia',3,4,3,3,3,2,1,2,3,4,3,4],
+  ['Ussery, Elijah',3,3,3,4,3,3,1,1,4,3,3,3],
+  ['Versace, Roselee',4,4,3,4,4,4,4,4,4,4,4,4],
+  ['Whitman, Fred',3,2,4,3,3,2,1,4,3,2,3,4],
+  ['Winkleman, Eladia',4,3,4,3,4,3,4,3,3,3,4,4]
+]
+
+updateTable(rows)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTIONS
+
+function colorMe(num){
+    if(num===0){return "#DCDCDC"} // grey
+    else if(num<=.5){return "#FF6600"} // orange
+    else if(num>.5&&num<=.6){return "#FF9900"} // light orange
+    else if(num>.6&&num<=.75){return "#9ACD32"} //light green
+    else{return '#698B22'} // dark green
+}
+
+function colorMeTier(num){
+    if(num===0){return "#DCDCDC"}
+    else if(num<=1&&num>0){return "#FF6600"}
+    else if(num<=2&&num>1){return "#FF9900"}
+    else if(num<=3&&num>2){return "#9ACD32"}
+    else{return '#698B22'}
+}
+
+
+</script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    
+  </body>
+</html>

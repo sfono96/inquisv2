@@ -37,7 +37,7 @@ def log():
 			return redirect(url_for('log'))
 		else:
 			session['logged_in'] = True
-			return redirect(url_for('dash'))
+			return redirect(url_for('dash_demo'))
 	return render_template('log.html',error=error)
 
 # main
@@ -78,6 +78,14 @@ def dash_demo():
 	assessment_data = recent_assessment_data() 
 	return render_template('dash_demo.html',grade_data=grade_data, assessment_data=assessment_data)
 
+# drill - DEMO
+@login_required
+@app.route('/drill_demo',methods=['GET','POST'])
+def drill_demo():
+	grade_data = grade_level_data() 
+	assessment_data = recent_assessment_data() 
+	return render_template('drill_demo.html',grade_data=grade_data, assessment_data=assessment_data)
+
 # student - DEMO
 @login_required
 @app.route('/student_demo',methods=['GET','POST'])
@@ -86,6 +94,13 @@ def student_demo():
 	assessment_data = recent_assessment_data() 
 	return render_template('student_demo.html',grade_data=grade_data, assessment_data=assessment_data)
 
+# grid - DEMO
+@login_required
+@app.route('/grid_demo',methods=['GET','POST'])
+def grid_demo():
+	grade_data = grade_level_data() 
+	assessment_data = recent_assessment_data() 
+	return render_template('grid_demo.html',grade_data=grade_data, assessment_data=assessment_data)
 
 ################ data API's ################
 
